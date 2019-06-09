@@ -47,6 +47,11 @@ func (c *celsiusFlag) Set(s string) error {
 	}
 }
 
+/**
+如果将Set函数签名改为func (c celsiusFlag) Set(s string) error (去掉 *)。为celsiusFlag而非其指针类型声明Set方法，会自动生成一个接收者是对应指针类型的方法。但是
+两个方法都不会影响到调用者。其他代码不变重新运行该程序会发现不管传入什么值，程序都打印20°C，进一步验证不会影响调用者。
+*/
+
 func CelsiusFlag(name string, value Celsius, usage string) *Celsius {
 	cf := &celsiusFlag{value}
 	flag.CommandLine.Var(cf, name, usage)
