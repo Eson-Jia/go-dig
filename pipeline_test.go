@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"testing"
 	"time"
 )
 
@@ -27,7 +28,7 @@ func RandomProduce(output chan<- int) {
 	close(output)
 }
 
-func main() {
+func TestPipeline(t *testing.T) {
 	ch1, ch2 := make(chan int), make(chan int)
 	go RandomProduce(ch1)
 	go Square(ch1, ch2)

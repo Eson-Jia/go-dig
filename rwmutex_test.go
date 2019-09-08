@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"sync"
+	"testing"
 	"time"
 )
 
 var mu sync.RWMutex
 var count int
 
-func main() {
+func TestRW(t *testing.T) {
 	go A()
 	time.Sleep(2 * time.Second)
 	mu.Lock()

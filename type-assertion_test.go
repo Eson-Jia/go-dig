@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
-import "context"
+import (
+	"fmt"
+	"testing"
+)
 
 type I1 interface {
 	F1()
@@ -33,8 +35,7 @@ func (s S1) F4() {
 	fmt.Println("F4")
 }
 
-func main() {
-	ctx := context.WithValue(nil, "asd", "asdsad")
+func TestTypeAssertion(t *testing.T) {
 	var eface interface{} = S1{}
 	I1face := eface.(I1)
 	I1face.F1()

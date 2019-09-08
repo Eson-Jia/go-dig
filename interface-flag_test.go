@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"testing"
 )
 
 type Celsius float64
@@ -62,7 +63,7 @@ func CelsiusFlag(name string, value Celsius, usage string) *Celsius {
 
 var temp = CelsiusFlag("temp", 20.0, "the temperature")
 
-func main() {
+func TestInterfaceFlag(t *testing.T) {
 	flag.Parse()
 	fmt.Println(*temp)
 }

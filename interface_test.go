@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 type Person interface {
 	job()
@@ -39,7 +42,7 @@ func (s *Student) job() {
 	fmt.Println("coding")
 }
 
-func main() {
+func TestInterface(t *testing.T) {
 	s := &Student{age: 10}
 	groupUp(s)
 	whatJob(s)

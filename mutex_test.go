@@ -1,14 +1,15 @@
-package main
+package main_test
 
 import (
 	"fmt"
 	"sync"
+	"testing"
 )
 
 var mu sync.Mutex
 var chain string
 
-func main() {
+func TestMutex(t *testing.T) {
 	chain = "main"
 	A()
 	fmt.Println(chain)

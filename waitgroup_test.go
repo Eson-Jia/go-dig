@@ -2,10 +2,11 @@ package main
 
 import (
 	"sync"
+	"testing"
 	"time"
 )
 
-func main() {
+func TestWaitGroup(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {

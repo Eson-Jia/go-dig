@@ -3,10 +3,11 @@ package main
 import (
 	"log"
 	"net/http"
+	"testing"
 	"time"
 )
 
-func main() {
+func TestHttpContext(t *testing.T) {
 	http.HandleFunc("/ping", func(w http.ResponseWriter, req *http.Request) {
 		select {
 		case <-req.Context().Done():
@@ -16,6 +17,5 @@ func main() {
 		}
 	})
 
-	
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }

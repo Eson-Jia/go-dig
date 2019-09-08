@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 //Options 参数
 type Options struct {
@@ -60,7 +63,7 @@ func WithIntOpt2(param int) Option {
 	})
 }
 
-func main() {
+func TestOptions(t *testing.T) {
 	var optionList []Option
 	withInt1, withInt2, withString1, withString2 := true, true, true, true
 	if withInt1 {
