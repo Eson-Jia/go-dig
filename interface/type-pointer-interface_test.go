@@ -29,6 +29,18 @@ func Test(t *testing.T) {
 	var c coder = &Gopher{"GO"}
 	c.code()
 	c.debug()
+
+	// 这样调用会报错
+	Gopher{}.debug()
+	//./type-pointer-interface_test.go:34:10: cannot call pointer method on Gopher literal
+	//./type-pointer-interface_test.go:34:10: cannot take the address of Gopher literal
+	// 因为直接使用类型为 Gopher 的字面量调用 debug，但是 Gopher 没有实现 debug 函数
+
+	// 不像上面那样报错的原因：这是一个语法糖，person 是一个变量而非字面量，变量都可以取地址，所以编译器就帮我们把加上了取地址符。
+	person := Gopher{}
+	person.debug()
+	// 上面这就编译器处理之后就变成
+	// &person.debug()
 }
 
 /*
@@ -41,5 +53,5 @@ func Test(t *testing.T) {
 但是，当实现了一个接收者是指针类型的方法是，如果此时自动生成一个接收者是值类型的方法，原本期望对接受者的改变不会实现，因为值类型
 会产生一个拷贝，不会真正影响到调用者。
 
-类型 T 只有接受者是 T 的方法；而类型 *T 拥有接受者是 T 和 *T 的方法。语法上 T 能直接调 *T 的方法仅仅是 Go 的语法糖。
+类型 T 只有接受者是 T 的方法；而类型 *T 拥有接受者是 T 和 *T 的方法。语法上 T类型的变量 能直接调 *T 的方法仅仅是 Go 的语法糖,编译器在编译的时候加上了取址符。
 */
