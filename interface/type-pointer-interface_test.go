@@ -31,7 +31,7 @@ func Test(t *testing.T) {
 	c.debug()
 
 	// 这样调用会报错
-	Gopher{}.debug()
+	// Gopher{}.debug()
 	//./type-pointer-interface_test.go:34:10: cannot call pointer method on Gopher literal
 	//./type-pointer-interface_test.go:34:10: cannot take the address of Gopher literal
 	// 因为直接使用类型为 Gopher 的字面量调用 debug，但是 Gopher 没有实现 debug 函数
