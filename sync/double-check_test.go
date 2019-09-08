@@ -1,4 +1,4 @@
-package doublecheck
+package main
 
 import (
 	"sync"
