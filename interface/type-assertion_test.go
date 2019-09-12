@@ -49,5 +49,14 @@ func TestTypeAssertion(t *testing.T) {
 	var einterface interface{}
 	_, ok := interface{}(einterface).(interface{})
 	fmt.Println(ok)
+}
 
+func TestInterfaceTypeAssertion(t *testing.T) {
+	key := "timeout"
+	options := map[string]interface{}{
+		key: int(100),
+	}
+	if v, ok := options[key]; ok {
+		fmt.Println("timeout:", v.(uint)) // panic: interface conversion: interface {} is int, not uint
+	}
 }
