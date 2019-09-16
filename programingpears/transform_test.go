@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"os"
+	"net/http"
 	"sort"
 	"testing"
 )
@@ -16,13 +16,13 @@ func TestSortSlice(t *testing.T) {
 }
 
 func TestFindTransform(t *testing.T) {
-	f, err := os.Open("words_alpha.txt")
+	resp, err := http.Get("https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt")
 	if err != nil {
-		t.Errorf("failed in open file:%s", err)
+		t.Errorf("http get error:%s", err)
 		return
 	}
-	defer f.Close()
-	read := bufio.NewReader(f)
+	defer resp.Body.Close()
+	read := bufio.NewReader(resp.Body)
 	theColleciton := make(map[string][]string)
 	theKeys := make([]string, 0)
 	for {
