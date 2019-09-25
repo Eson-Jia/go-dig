@@ -9,6 +9,13 @@ import (
 
 var err = errors.New("new errors")
 
+func TestWrap(t *testing.T) {
+	innerErr := errors.New("I'am a inner error")
+	outerErr := fmt.Errorf("I'am outer error,this is inner:%w", innerErr)
+	fmt.Printf("%v\n", outerErr)
+	// output:I'am outer error,this is inner:I'am a inner error
+}
+
 func TestUnwrap(t *testing.T) {
 	if innerErr := errors.Unwrap(fmt.Errorf("%w", err)); innerErr != err {
 		t.Error(`errors.Unwrap(fmt.Errorf("%w", err))!=err`)
