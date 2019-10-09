@@ -3,6 +3,7 @@ package testjson
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -21,6 +22,17 @@ func TestJsonUnMarshal(t *testing.T) {
 	fmt.Println(test.FieldA)
 }
 
-func TestJosnMarshal(t *testing.T) {
-
+func TestJsonOmitEmptyMarshal(t *testing.T) {
+	data := struct {
+		FiledA string `json:"fileda,omitempty"`
+		FiledB string `json:"filedb"`
+	}{}
+	body, err := json.Marshal(data)
+	if err != nil {
+		t.Errorf("%s\n", err)
+	}
+	// FiledA有 omitempty tag 因为是零值,所以被省略了
+	if strings.Compare(`{"filedb":""}`, string(body)) != 0 {
+		t.Errorf("failed in compare\n")
+	}
 }
