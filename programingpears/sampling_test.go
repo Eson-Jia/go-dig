@@ -1,4 +1,4 @@
-package programingpears
+package pearls
 
 import (
 	"fmt"
@@ -72,6 +72,18 @@ func GenerateSelectArray3(m, n int) []int {
 	}
 	selected := origin[:m]
 	sort.Slice(selected, func(i, j int) bool { return selected[i] < selected[j] })
+	return selected
+}
+
+func GenerateSelectArray4(m, n int) []int {
+	var selected []int
+	theSelect, remaining := m, n
+	for i := 0; i < n; i++ {
+		if (RandBigNum() % (n - i)) < theSelect {
+			remaining--
+			selected = append(selected, i)
+		}
+	}
 	return selected
 }
 

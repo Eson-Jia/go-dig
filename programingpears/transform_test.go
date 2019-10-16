@@ -1,4 +1,4 @@
-package programingpears
+package pearls
 
 import (
 	"bufio"
