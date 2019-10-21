@@ -33,7 +33,10 @@ func (i *IntSetArr) Size() int {
 }
 
 func (i *IntSetArr) Report() []int {
-	var dst []int
+	dst := make([]int, i.Size())
+	// copy 会从 src 拷贝数据到 dst,
+	// 返回值为拷贝的长度，为 min(len(dst),len(src)).
+	// 所以，如果 dst 为零值或者长度为 0,那么不能拷贝进去任何数据
 	copy(dst, i.array)
 	return dst
 }
