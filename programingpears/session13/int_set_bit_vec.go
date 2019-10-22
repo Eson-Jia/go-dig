@@ -44,6 +44,7 @@ func (i *IntSetBitVec) Report() []int {
 	dst := make([]int, 0)
 	for index, word := range i.buff {
 		for j := 0; j < BITSPERWORD; j++ {
+			// 注意为什么将判断条件设置为: word&(1<<j) == 1 是不正确的
 			if word&(1<<j) > 0 {
 				dst = append(dst, index<<SHIFT+j)
 			}
