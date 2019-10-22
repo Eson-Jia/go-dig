@@ -38,6 +38,10 @@ func Test_Set(t *testing.T) {
 			IntSet: NewIntSetBST(maxElements, maxVal),
 			Name:   "IntSetBST",
 		},
+		{
+			IntSet: NewIntSetBitVec(maxElements, maxVal),
+			Name:   "IntSetBitVec",
+		},
 	}
 	for _, set := range sets {
 		for _, suit := range suits {
@@ -83,4 +87,10 @@ func TestMap(t *testing.T) {
 		fmt.Println(theDst)
 	}(array)
 	fmt.Println(array)
+}
+
+// TestNotOperand 测试取反操作符，golang 的取反操作符是 ^
+func TestNotOperand(t *testing.T) {
+	i := int(0x1f)
+	fmt.Println(^i)
 }
