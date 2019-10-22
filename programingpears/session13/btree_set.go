@@ -54,20 +54,24 @@ func (i *IntSetBST) Size() int {
 	return i.size
 }
 
-func (i *IntSetBST) report(node *bTreeNode, dst []int) {
-	if node == nil || node == i.sentinel {
+func (i *IntSetBST) traverse(node *bTreeNode, dst []int) {
+	// 因为有哨兵，所以应该永远不会为 nil,否则逻辑有错误
+	if node == nil {
+		panic("should never be nil")
+	}
+	if node == i.sentinel {
 		return
 	}
 	dst[i.travel] = node.value
 	i.travel++
-	i.report(node.left, dst)
-	i.report(node.right, dst)
+	i.traverse(node.left, dst)
+	i.traverse(node.right, dst)
 }
 
 func (i *IntSetBST) Report() []int {
 	i.travel = 0
 	dst := make([]int, i.size, i.size)
-	i.report(i.root, dst)
+	i.traverse(i.root, dst)
 	dst = dst[:i.size]
 	sort.Slice(dst, func(a, b int) bool { return dst[a] < dst[b] })
 	return dst
