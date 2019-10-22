@@ -4,6 +4,7 @@ import "sort"
 
 type IntSetBST struct {
 	size           int
+	travel         int
 	root, sentinel *bTreeNode
 }
 
@@ -53,21 +54,21 @@ func (i *IntSetBST) Size() int {
 	return i.size
 }
 
-func (i *IntSetBST) report(node *bTreeNode, dst map[int]struct{}) {
+func (i *IntSetBST) report(node *bTreeNode, dst []int) {
 	if node == nil || node == i.sentinel {
 		return
 	}
-	dst[node.value] = struct{}{}
+	dst[i.travel] = node.value
+	i.travel++
 	i.report(node.left, dst)
 	i.report(node.right, dst)
 }
 
-func (i *IntSetBST) Report() (ret []int) {
-	dst := make(map[int]struct{})
+func (i *IntSetBST) Report() []int {
+	i.travel = 0
+	dst := make([]int, i.size, i.size)
 	i.report(i.root, dst)
-	for k := range dst {
-		ret = append(ret, k)
-	}
-	sort.Slice(ret, func(a, b int) bool { return ret[a] < ret[b] })
-	return
+	dst = dst[:i.size]
+	sort.Slice(dst, func(a, b int) bool { return dst[a] < dst[b] })
+	return dst
 }
