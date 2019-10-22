@@ -16,6 +16,12 @@ func Test_Set(t *testing.T) {
 		{Source: []int{1, 2, 3, 5, 6, 4, 4},
 			Dst: []int{1, 2, 3, 4, 5, 6},
 		},
+		{Source: []int{1, 2, 3, 4, 5, 6},
+			Dst: []int{1, 2, 3, 4, 5, 6},
+		},
+		{Source: []int{6, 5, 4, 3, 2, 1, 0},
+			Dst: []int{0, 1, 2, 3, 4, 5, 6},
+		},
 	}
 
 	sets := []struct {
