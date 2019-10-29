@@ -9,7 +9,7 @@ int wordncmp(char *p, char *q)
 {
     int n = k;
     for (; *p == *q; p++, q++)
-        if (*p == 0 && --n == 0)
+        if (*p == 0 && --n == 0) //遇到空格说明一过完了一个单词
             return 0;
     return *p - *q;
 }
@@ -37,24 +37,24 @@ int main()
     for (i = 0; i < k; i++)
         word[nword][i] = 0;
     for (i = 0; i < k; i++)
-        printf("%s\n", word[i]);
+        printf("%s\n", word[i]); // 将第一个短语输出出来
     qsort(word, nword, sizeof(word[0]), sortcmp);
     phrase = inputchars;
     for (; wordsleft > 0; wordsleft--)
     {
         l = -1;
         u = nword;
-        while (l + 1 != u)
+        while (l + 1 != u) //-->1. 二分查找法,查找第一个相等的位置
         {
             m = (l + u) / 2;
             if (wordncmp(word[m], phrase) < 0)
                 l = m;
-            else
+            else // >=0
                 u = m;
-        }
-        for (i = 0; wordncmp(phrase, word[u + i]) == 0; i++)
+        }                                                    //<--1.
+        for (i = 0; wordncmp(phrase, word[u + i]) == 0; i++) //-->2. 从第一个相等的位置开始,随机挑选一个相等的并使 p 指向该位置
             if (rand() % (i + 1) == 0)
-                p = word[u + i];
+                p = word[u + i]; //<--2.
         phrase = skip(p, 1);
         if (strlen(skip(phrase, k - 1)) == 0)
             break;
