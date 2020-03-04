@@ -13,8 +13,9 @@ func TestSignal(t *testing.T) {
 	removeFromQueue := func(delay time.Duration) {
 		time.Sleep(delay)
 		theCond.L.Lock()
+		before := len(queue)
 		queue = queue[1:]
-		fmt.Println("remove from queue")
+		fmt.Printf("before len:%d,remove from queue,after len:%d\n", before, len(queue))
 		theCond.L.Unlock()
 		theCond.Signal()
 	}
@@ -23,7 +24,6 @@ func TestSignal(t *testing.T) {
 		for len(queue) == 2 {
 			theCond.Wait()
 		}
-
 		queue = append(queue, struct{}{})
 		fmt.Println("add to queue")
 		go removeFromQueue(time.Second)
