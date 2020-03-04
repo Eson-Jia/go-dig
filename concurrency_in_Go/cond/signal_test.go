@@ -52,15 +52,15 @@ func TestBroadcast(t *testing.T) {
 	finished.Add(3)
 	subscribe(&button, func() {
 		defer finished.Done()
-		fmt.Println("max windows")
+		fmt.Println("maximizing windows")
 	})
 	subscribe(&button, func() {
 		defer finished.Done()
-		fmt.Println("hello")
+		fmt.Println("displaying annoying dialog box!")
 	})
 	subscribe(&button, func() {
 		defer finished.Done()
-		fmt.Println("close timer")
+		fmt.Println("Mouse clicked.")
 	})
 	button.Clicked.Broadcast()
 	finished.Wait()
