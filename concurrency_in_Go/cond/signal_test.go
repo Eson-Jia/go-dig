@@ -1,4 +1,4 @@
-package cond__test
+package cond_test
 
 import (
 	"fmt"
@@ -29,5 +29,39 @@ func TestSignal(t *testing.T) {
 		go removeFromQueue(time.Second)
 		theCond.L.Unlock()
 	}
+}
 
+func TestBroadcast(t *testing.T) {
+	type Button struct {
+		Clicked *sync.Cond
+	}
+	button := Button{Clicked: &sync.Cond{L: &sync.Mutex{}}}
+	subscribe := func(button *Button, fn func()) {
+		var wg sync.WaitGroup
+		wg.Add(1)
+		go func() {
+			wg.Done()
+			button.Clicked.L.Lock()
+			defer button.Clicked.L.Unlock()
+			button.Clicked.Wait()
+			fn()
+		}()
+		wg.Wait()
+	}
+	var finished sync.WaitGroup
+	finished.Add(3)
+	subscribe(&button, func() {
+		defer finished.Done()
+		fmt.Println("max windows")
+	})
+	subscribe(&button, func() {
+		defer finished.Done()
+		fmt.Println("hello")
+	})
+	subscribe(&button, func() {
+		defer finished.Done()
+		fmt.Println("close timer")
+	})
+	button.Clicked.Broadcast()
+	finished.Wait()
 }
