@@ -141,6 +141,7 @@ func Test_Fan_Out(t *testing.T) {
 			default:
 
 			}
+			time.Sleep(time.Second)
 			fmt.Println(prefix, value)
 		}
 	}
