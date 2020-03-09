@@ -119,15 +119,15 @@ func Test_Pipeline1(t *testing.T) {
 }
 
 func Test_Fan_Out(t *testing.T) {
-	generator := func(done <-chan interface{}, values ...int) <-chan int {
+	generator := func(done <-chan interface{}, until int) <-chan int {
 		outStream := make(chan int)
 		go func() {
 			defer close(outStream)
-			for _, value := range values {
+			for i := 0; i < until; i++ {
 				select {
 				case <-done:
 					return
-				case outStream <- value:
+				case outStream <- i:
 				}
 			}
 		}()
@@ -146,7 +146,7 @@ func Test_Fan_Out(t *testing.T) {
 	}
 	done := make(chan interface{})
 	defer close(done)
-	outStream := generator(done, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+	outStream := generator(done, 10)
 	var wg sync.WaitGroup
 	wg.Add(3)
 	for i := 0; i < 3; i++ {
