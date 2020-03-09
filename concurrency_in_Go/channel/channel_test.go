@@ -133,6 +133,29 @@ func Test_Fan_Out(t *testing.T) {
 		}()
 		return outStream
 	}
+	fan_in := func(done <-chan interface{}, inStreams ...<-chan int) <-chan int {
+		outStream := make(chan int)
+		defer close(outStream)
+		var wg sync.WaitGroup
+		wg.Add(len(inStreams))
+		go func() {
+			defer close(outStream)
+			for _, inStream := range inStreams {
+				go func(stream <-chan int) {
+					defer wg.Done()
+					for value := range stream {
+						select {
+						case <-done:
+							return
+						case outStream <- value:
+						}
+					}
+				}(inStream)
+			}
+			wg.Wait()
+		}()
+		return outStream
+	}
 	OutValue := func(done chan interface{}, inStream <-chan int, prefix string) {
 		for value := range inStream {
 			select {
@@ -144,6 +167,16 @@ func Test_Fan_Out(t *testing.T) {
 			time.Sleep(time.Second)
 			fmt.Println(prefix, value)
 		}
+	}
+	cpuKiller := func(done chan interface{}, inStream <-chan int) <-chan int {
+		outStream := make(chan int)
+		for value := range inStream {
+			select {
+			case <-done:
+				return
+			}
+		}
+		return outStream
 	}
 	done := make(chan interface{})
 	defer close(done)
