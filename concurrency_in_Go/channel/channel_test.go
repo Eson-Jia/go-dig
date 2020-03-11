@@ -16,9 +16,9 @@ func Test_Or(t *testing.T) {
 		case 1:
 			return channels[0]
 		}
-		doneC := make(chan interface{})
+		orDone := make(chan interface{})
 		go func() {
-			defer close(doneC)
+			defer close(orDone)
 			switch len(channels) {
 			case 2:
 				select {
@@ -29,11 +29,12 @@ func Test_Or(t *testing.T) {
 				select {
 				case <-channels[0]:
 				case <-channels[1]:
-				case <-or(channels[2:]...):
+				case <-channels[2]:
+				case <-or(append(channels[3:], orDone)...):
 				}
 			}
 		}()
-		return doneC
+		return orDone
 	}
 	sig := func(duration time.Duration) <-chan interface{} {
 		done := make(chan interface{})
@@ -46,9 +47,11 @@ func Test_Or(t *testing.T) {
 	}
 	start := time.Now()
 	<-or(
-		sig(time.Second),
-		sig(time.Minute),
-		sig(time.Hour),
+		sig(2*time.Hour),
+		sig(5*time.Minute),
+		sig(1*time.Second),
+		sig(1*time.Hour),
+		sig(1*time.Minute),
 	)
 	duration := time.Since(start)
 	fmt.Printf("duration is :%v\n", duration)
