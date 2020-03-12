@@ -57,21 +57,12 @@ func Test_Or(t *testing.T) {
 	fmt.Printf("duration is :%v\n", duration)
 }
 
-func Test_Pepiline(t *testing.T) {
-	repeat := func(done <-chan interface{}, fn func() interface{}) <-chan interface{} {
-		outStream := make(chan interface{})
-		go func() {
-			defer close(outStream)
-			for {
-				select {
-				case <-done:
-					return
-				case outStream <- fn():
-				}
-			}
-		}()
-		return outStream
-	}
+// 这个测试有 panic 因为 close of closed channel
+// 因为 repeat 中的 for 所在的 goroutine 和 main goroutine并发运行
+// 当 repeat 往 chan 中传入超过10个数字的时候,close(done)就会被调用至少两次
+// 使用 sync.Once 包着 close(done)可以避免这个问题
+func Test_Pipeline(t *testing.T) {
+	var once sync.Once
 	count := 0
 	done := make(chan interface{})
 	for value := range repeat(done, func() interface{} {
@@ -79,28 +70,15 @@ func Test_Pepiline(t *testing.T) {
 	}) {
 		count += 1
 		if count > 10 {
-			close(done)
+			once.Do(func() {
+				close(done)
+			})
 		}
 		fmt.Println(value)
 	}
-
 }
 
 func Test_Pipeline1(t *testing.T) {
-	generator := func(done <-chan interface{}, values ...int) <-chan int {
-		outStream := make(chan int)
-		go func() {
-			defer close(outStream)
-			for _, value := range values {
-				select {
-				case <-done:
-					return
-				case outStream <- value:
-				}
-			}
-		}()
-		return outStream
-	}
 	multiple := func(done <-chan interface{}, inStream <-chan int, multiper int) <-chan int {
 		outStream := make(chan int)
 		go func() {
@@ -116,7 +94,7 @@ func Test_Pipeline1(t *testing.T) {
 		return outStream
 	}
 	done := make(chan interface{})
-	for value := range multiple(done, generator(done, 1, 2, 3, 4, 5, 6, 7), 10) {
+	for value := range multiple(done, Generator(done, 10), 10) {
 		fmt.Println(value)
 	}
 }
@@ -180,12 +158,29 @@ func Test_Fan_Out_Fan_In(t *testing.T) {
 
 func TestChanSlice(t *testing.T) {
 	channels := make([]chan int, 5)
-	//
+	//channels 里面的 chan 没有调用(make)初始化, 值都是 nil,需要初始化
+	//值为 nil 的 chan 读取和写入值都会阻塞,close 会 panic
 	channels[0] = make(chan int)
 	go func() {
+		close(channels[0])
 		channels[0] <- 12
 	}()
 	fmt.Println(<-channels[0])
+}
+
+func repeat(done <-chan interface{}, fn func() interface{}) <-chan interface{} {
+	outStream := make(chan interface{})
+	go func() {
+		defer close(outStream)
+		for {
+			select {
+			case <-done:
+				return
+			case outStream <- fn():
+			}
+		}
+	}()
+	return outStream
 }
 
 func Generator(done <-chan interface{}, until int) <-chan int {
