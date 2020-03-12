@@ -137,12 +137,11 @@ func Test_Fan_Out(t *testing.T) {
 		return outStream
 	}
 	fan_in := func(done <-chan interface{}, inStreams ...<-chan int) <-chan int {
-		outStream := make(chan int)
-		defer close(outStream)
+		multiplexedStream := make(chan int)
 		var wg sync.WaitGroup
 		wg.Add(len(inStreams))
 		go func() {
-			defer close(outStream)
+			defer close(multiplexedStream)
 			for _, inStream := range inStreams {
 				go func(stream <-chan int) {
 					defer wg.Done()
@@ -150,15 +149,16 @@ func Test_Fan_Out(t *testing.T) {
 						select {
 						case <-done:
 							return
-						case outStream <- value:
+						case multiplexedStream <- value:
 						}
 					}
 				}(inStream)
 			}
 			wg.Wait()
 		}()
-		return outStream
+		return multiplexedStream
 	}
+
 	OutValue := func(done chan interface{}, inStream <-chan int, prefix string) {
 		for value := range inStream {
 			select {
@@ -167,30 +167,46 @@ func Test_Fan_Out(t *testing.T) {
 			default:
 
 			}
-			time.Sleep(time.Second)
+			//time.Sleep(time.Second)
 			fmt.Println(prefix, value)
 		}
 	}
-	cpuKiller := func(done chan interface{}, inStream <-chan int) <-chan int {
-		outStream := make(chan int)
-		for value := range inStream {
-			select {
-			case <-done:
-				return
-			}
+
+	fan_out := func(done <-chan interface{}, inStream <-chan int, outSize int) []<-chan int {
+		var streams []chan int
+		var outStreams []<-chan int
+		for i := 0; i < outSize; i++ {
+			stream := make(chan int)
+			streams = append(streams, stream)
+			outStreams = append(outStreams, stream)
 		}
-		return outStream
+		for i := 0; i < outSize; i++ {
+			go func(outStream chan int) {
+				defer close(outStream)
+				for v := range inStream {
+					select {
+					case <-done:
+						return
+					case outStream <- v:
+					}
+				}
+			}(streams[i])
+		}
+		return outStreams
 	}
+
 	done := make(chan interface{})
 	defer close(done)
-	outStream := generator(done, 10)
-	var wg sync.WaitGroup
-	wg.Add(3)
-	for i := 0; i < 3; i++ {
-		go func(index int) {
-			defer wg.Done()
-			OutValue(done, outStream, fmt.Sprintf("%d", index))
-		}(i)
-	}
-	wg.Wait()
+	outStream := generator(done, 50)
+	OutValue(done, fan_in(done, fan_out(done, outStream, 10)...), "only_one")
+}
+
+func TestChanSlice(t *testing.T) {
+	channels := make([]chan int, 5)
+	//
+	channels[0] = make(chan int)
+	go func() {
+		channels[0] <- 12
+	}()
+	fmt.Println(<-channels[0])
 }
