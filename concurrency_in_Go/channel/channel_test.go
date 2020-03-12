@@ -121,84 +121,61 @@ func Test_Pipeline1(t *testing.T) {
 	}
 }
 
-func Test_Fan_Out(t *testing.T) {
-	generator := func(done <-chan interface{}, until int) <-chan int {
-		outStream := make(chan int)
-		go func() {
-			defer close(outStream)
-			for i := 0; i < until; i++ {
-				select {
-				case <-done:
-					return
-				case outStream <- i:
-				}
-			}
-		}()
-		return outStream
-	}
-	fan_in := func(done <-chan interface{}, inStreams ...<-chan int) <-chan int {
-		multiplexedStream := make(chan int)
-		var wg sync.WaitGroup
-		wg.Add(len(inStreams))
-		go func() {
-			defer close(multiplexedStream)
-			for _, inStream := range inStreams {
-				go func(stream <-chan int) {
-					defer wg.Done()
-					for value := range stream {
-						select {
-						case <-done:
-							return
-						case multiplexedStream <- value:
-						}
-					}
-				}(inStream)
-			}
-			wg.Wait()
-		}()
-		return multiplexedStream
-	}
-
-	OutValue := func(done chan interface{}, inStream <-chan int, prefix string) {
+func echoValue(done chan interface{}, inStream <-chan int, prefix string) <-chan int {
+	outStream := make(chan int)
+	go func() {
+		defer close(outStream)
 		for value := range inStream {
 			select {
 			case <-done:
-				return
-			default:
-
+			case outStream <- value:
+				time.Sleep(time.Second)
+				fmt.Println(prefix, value)
 			}
-			//time.Sleep(time.Second)
-			fmt.Println(prefix, value)
 		}
-	}
+	}()
+	return outStream
+}
 
-	fan_out := func(done <-chan interface{}, inStream <-chan int, outSize int) []<-chan int {
-		var streams []chan int
-		var outStreams []<-chan int
-		for i := 0; i < outSize; i++ {
-			stream := make(chan int)
-			streams = append(streams, stream)
-			outStreams = append(outStreams, stream)
-		}
-		for i := 0; i < outSize; i++ {
-			go func(outStream chan int) {
-				defer close(outStream)
-				for v := range inStream {
-					select {
-					case <-done:
-						return
-					case outStream <- v:
-					}
-				}
-			}(streams[i])
-		}
-		return outStreams
-	}
-
+func Test_Fan_Out_In_Chain(t *testing.T) {
 	done := make(chan interface{})
 	defer close(done)
-	outStream := generator(done, 50)
-	OutValue(done, fan_in(done, fan_out(done, outStream, 10)...), "only_one")
+	outStream := Generator(done, 50)
+	echoValue(done, FanIn(done, FanOut(done, outStream, 10)...), "only_one")
+}
+
+func Test_Fan_Out_Fan_In(t *testing.T) {
+	// 使用 fan-out 拆成多个 channel
+	theSize := 0
+	var mutex sync.Mutex
+	finished := make(chan interface{})
+	blackHole := func(done <-chan interface{}, inStream <-chan int, amount int) {
+		go func() {
+			for v := range inStream {
+				select {
+				case <-done:
+					return
+					// 注意,如果不加 default 就会一直阻塞 select 直到 done 被 close
+				default:
+					fmt.Sprintln(v)
+				}
+				mutex.Lock()
+				theSize++
+				if theSize >= amount {
+					close(finished)
+				}
+				mutex.Unlock()
+			}
+		}()
+	}
+	size := 100
+	done := make(chan interface{})
+	defer close(done)
+	outStreams := FanOut(done, Generator(done, size), 10)
+	for index, outStream := range outStreams {
+		blackHole(done, echoValue(done, outStream, fmt.Sprintf("%d", index)), size)
+	}
+	<-finished
 }
 
 func TestChanSlice(t *testing.T) {
@@ -209,4 +186,65 @@ func TestChanSlice(t *testing.T) {
 		channels[0] <- 12
 	}()
 	fmt.Println(<-channels[0])
+}
+
+func Generator(done <-chan interface{}, until int) <-chan int {
+	outStream := make(chan int)
+	go func() {
+		defer close(outStream)
+		for i := 0; i < until; i++ {
+			select {
+			case <-done:
+				return
+			case outStream <- i:
+			}
+		}
+	}()
+	return outStream
+}
+
+func FanOut(done <-chan interface{}, inStream <-chan int, outSize int) []<-chan int {
+	var streams []chan int
+	var outStreams []<-chan int
+	for i := 0; i < outSize; i++ {
+		stream := make(chan int)
+		streams = append(streams, stream)
+		outStreams = append(outStreams, stream)
+	}
+	for i := 0; i < outSize; i++ {
+		go func(outStream chan int) {
+			defer close(outStream)
+			for v := range inStream {
+				select {
+				case <-done:
+					return
+				case outStream <- v:
+				}
+			}
+		}(streams[i])
+	}
+	return outStreams
+}
+
+func FanIn(done <-chan interface{}, inStreams ...<-chan int) <-chan int {
+	multiplexedStream := make(chan int)
+	var wg sync.WaitGroup
+	wg.Add(len(inStreams))
+	go func() {
+		defer close(multiplexedStream)
+		for _, inStream := range inStreams {
+			go func(stream <-chan int) {
+				defer wg.Done()
+				for value := range stream {
+					select {
+					case <-done:
+						return
+					case multiplexedStream <- value:
+					}
+				}
+			}(inStream)
+		}
+		wg.Wait()
+	}()
+	return multiplexedStream
 }
