@@ -79,24 +79,25 @@ func Test_Pipeline(t *testing.T) {
 }
 
 func Test_Pipeline1(t *testing.T) {
-	multiple := func(done <-chan interface{}, inStream <-chan int, multiper int) <-chan int {
-		outStream := make(chan int)
-		go func() {
-			defer close(outStream)
-			for value := range inStream {
-				select {
-				case <-done:
-					return
-				case outStream <- value * multiper:
-				}
-			}
-		}()
-		return outStream
-	}
 	done := make(chan interface{})
 	for value := range multiple(done, Generator(done, 10), 10) {
 		fmt.Println(value)
 	}
+}
+
+func multiple(done <-chan interface{}, inStream <-chan int, multiper int) <-chan int {
+	outStream := make(chan int)
+	go func() {
+		defer close(outStream)
+		for value := range inStream {
+			select {
+			case <-done:
+				return
+			case outStream <- value * multiper:
+			}
+		}
+	}()
+	return outStream
 }
 
 func echoValue(done chan interface{}, inStream <-chan int, prefix string) <-chan int {
