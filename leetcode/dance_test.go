@@ -21,7 +21,8 @@ func TestMapOK(t *testing.T) {
 	log.Println(value, ok)
 }
 
-func TestRange(t *testing.T) {
+// TestLongestSubStr 无重复字符的最长子串
+func TestLongestSubStr(t *testing.T) {
 	theSuits := []struct {
 		origin string
 		result int
@@ -78,4 +79,47 @@ func TestRange(t *testing.T) {
 		}
 	}
 	log.Print()
+}
+
+// TestLongestCommonPrefix 最长公共前缀
+func TestLongestCommonPrefix(t *testing.T) {
+	theFunc := func(strs []string) string {
+		if len(strs) == 0 {
+			return ""
+		}
+		common := strs[0]
+		for _, str := range strs {
+			str1, str2 := common, str
+			buff := make([]byte, 0)
+			if len(str1) > len(str2) {
+				str1, str2 = str2, str1
+			}
+			for i := 0; i < len(str1); i++ {
+				if str1[i] != str2[i] {
+					break
+				}
+				buff = append(buff, str1[i])
+			}
+			common = string(buff)
+		}
+		return common
+	}
+	suits := []struct {
+		Input  []string
+		Output string
+	}{
+		{
+			Input:  []string{"flower", "flow", "flight"},
+			Output: "fl",
+		},
+		{
+			Input:  []string{"dog", "racecar", "car"},
+			Output: "",
+		},
+	}
+	for _, suit := range suits {
+		if theFunc(suit.Input) != suit.Output {
+			log.Fatalln("input:", suit.Input, "result:", theFunc(suit.Input), "output:", suit.Output)
+		}
+	}
 }
