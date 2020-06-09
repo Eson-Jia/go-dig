@@ -48,27 +48,33 @@ func TestRange(t *testing.T) {
 		},
 	}
 	theFunc := func(s string) int {
-		var max, current int
-		cache := make(map[int32]struct{}, 0)
-		for _, b := range s {
-			if _, ok := cache[b]; ok {
-				if current > max {
-					max = current
+		var max int
+		var begin int
+		cache := make(map[int32]int, 0)
+		var loopIndex int
+		var theChar int32
+		for loopIndex, theChar = range s {
+			if charIndex, ok := cache[theChar]; ok {
+				begin = charIndex
+				if loopIndex-begin > max {
+					max = loopIndex - begin
 				}
-				current = 0
-				cache = make(map[int32]struct{}, 0)
+				for theChar, position := range cache {
+					if position < begin {
+						delete(cache, theChar)
+					}
+				}
 			}
-			current += 1
-			cache[b] = struct{}{}
+			cache[theChar] = loopIndex
 		}
-		if max < current {
-			return current
+		if loopIndex-begin > max {
+			return loopIndex - begin
 		}
 		return max
 	}
 	for _, suit := range theSuits {
 		if theFunc(suit.origin) != suit.result {
-			log.Fatalln(suit.origin, theFunc(suit.origin), suit.result)
+			log.Fatalln(suit.origin, "result:", theFunc(suit.origin), "expect:", suit.result)
 		}
 	}
 	log.Print()
