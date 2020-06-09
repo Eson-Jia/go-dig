@@ -244,3 +244,24 @@ func FanIn(done <-chan interface{}, inStreams ...<-chan int) <-chan int {
 	}()
 	return multiplexedStream
 }
+
+func TestWorkStealing(t *testing.T) {
+	var fib func(int) <-chan int
+	fib = func(num int) <-chan int {
+		result := make(chan int)
+		go func() { //task
+			defer close(result)
+			if num <= 2 {
+				result <- 1
+				return
+			}
+			result <- <-fib(num-1) + <-fib(num-2)
+		}()
+		return result //continuation
+	}
+	fmt.Print(<-fib(100))
+}
+
+func TestFormat(t *testing.T) {
+	t.Log(fmt.Sprintf("%t\n", false))
+}
