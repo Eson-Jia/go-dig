@@ -22,30 +22,38 @@ func TestMapOK(t *testing.T) {
 }
 
 // TestLongestSubStr 无重复字符的最长子串
-func TestLongestSubStr(t *testing.T) {
+func TestLengthOfLongestSubstring(t *testing.T) {
 	theSuits := []struct {
-		origin string
-		result int
+		input  string
+		output int
 	}{
 		{
-			origin: "abcabcbb",
-			result: 3,
+			input:  "abcabcbb",
+			output: 3,
 		},
 		{
-			origin: "bbbbb",
-			result: 1,
+			input:  "bbbbb",
+			output: 1,
 		},
 		{
-			origin: "pwwkew",
-			result: 3,
+			input:  "pwwkew",
+			output: 3,
 		},
 		{
-			origin: " ",
-			result: 1,
+			input:  " ",
+			output: 1,
 		},
 		{
-			origin: "dvdf",
-			result: 3,
+			input:  "dvdf",
+			output: 3,
+		},
+		{
+			input:  "",
+			output: 0,
+		},
+		{
+			input:  "cdd",
+			output: 2,
 		},
 	}
 	theFunc := func(s string) int {
@@ -56,10 +64,10 @@ func TestLongestSubStr(t *testing.T) {
 		var theChar int32
 		for loopIndex, theChar = range s {
 			if charIndex, ok := cache[theChar]; ok {
-				begin = charIndex
-				if loopIndex-begin > max {
-					max = loopIndex - begin
+				if loopIndex-1-begin+1 > max {
+					max = loopIndex - 1 - begin + 1
 				}
+				begin = charIndex + 1
 				for theChar, position := range cache {
 					if position < begin {
 						delete(cache, theChar)
@@ -68,14 +76,14 @@ func TestLongestSubStr(t *testing.T) {
 			}
 			cache[theChar] = loopIndex
 		}
-		if loopIndex-begin > max {
-			return loopIndex - begin
+		if loopIndex-begin+1 > max && len(s) > 0 {
+			return loopIndex - begin + 1
 		}
 		return max
 	}
 	for _, suit := range theSuits {
-		if theFunc(suit.origin) != suit.result {
-			log.Fatalln(suit.origin, "result:", theFunc(suit.origin), "expect:", suit.result)
+		if theFunc(suit.input) != suit.output {
+			log.Fatalln("input:", suit.input, "output:", theFunc(suit.input), "expect:", suit.output)
 		}
 	}
 	log.Print()
@@ -119,7 +127,7 @@ func TestLongestCommonPrefix(t *testing.T) {
 	}
 	for _, suit := range suits {
 		if theFunc(suit.Input) != suit.Output {
-			log.Fatalln("input:", suit.Input, "result:", theFunc(suit.Input), "output:", suit.Output)
+			log.Fatalln("input:", suit.Input, "output:", theFunc(suit.Input), "output:", suit.Output)
 		}
 	}
 }
