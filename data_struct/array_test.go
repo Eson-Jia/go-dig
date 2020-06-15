@@ -1,23 +1,9 @@
 package data_struct
 
 import (
-	"fmt"
 	"log"
 	"testing"
 )
-
-func TestSlice(t *testing.T) {
-	origin := make([]byte, 100)
-	var model1 []byte
-	//需要传入 model1 的指针,因为需要对其做修改, model1 的值最好为 nil
-	n, err := fmt.Sscanf("123", "%s", &model1)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(model1)
-	fmt.Println(n, origin[:100])
-}
 
 // TestCreateSlice
 // 学习 slice make 语法的使用
@@ -41,16 +27,42 @@ func TestCreateSlice(t *testing.T) {
 }
 
 // TestSliceIsReference
-// slice 是一种引用类型指向底层的数组,多个 slice 可以引用同一个底层数组的不同位置,其中的元素可以交叠
+// slice 包含指针指向底层的数组,多个 slice 可以引用同一个底层数组的不同位置,其中的元素可以交叠
 func TestSliceIsReference(t *testing.T) {
 	a1 := [...]string{"cat", "dog", "mouse", "pig", "monkey"}
 	s1, s2 := a1[1:], a1[1:]
-	// 当一个 slice 修改了某个元素,另一个 slice 中同一元素的值当然会改变
+	//1. 当一个 slice 修改了某个元素,另一个 slice 中同一元素的值当然会改变
 	s1[2] = "PIG"
 	log.Print(s1, s2)
-	// 当修改了多个 slice 共同的底层数组的值,这些 slice 中对应的元素值也会变化
+	//2. 当修改了多个 slice 共同的底层数组的值,这些 slice 中对应的元素值也会变化
 	a1[3] = "pig"
 	log.Print(s1, s2)
+	//3. 因为 slice 包含了指向底层数组的指针,所以将 slice 传给函数,函数可以修改底层数组元素中的值
+	upper := func(s []string) {
+		s[3] = "PIG"
+	}
+	upper(s1)
+	log.Println(a1)
+	//4. 使用 append 修改 slice 的时候,如果 slice 包含的位置位于底层数组中间,那么位于 slice 后面的元素就会被覆盖掉
+	{
+		a1 := [...]string{"cat", "dog", "mouse", "pig", "monkey"}
+		s4 := a1[0:1]
+		s4 = append(s4,"tidy")
+		log.Println("a1:",a1,"s4:",s4)
+	}
+}
+
+// TestSliceAppend
+// 使用
+
+type IntSlice struct {
+	ptr *int
+	len int
+	cap int
+}
+func TestSliceAppend(t *testing.T) {
+
+	// slice
 }
 
 // TestNewCapacity
@@ -73,7 +85,7 @@ func TestSliceOperator(t *testing.T) {
 	// s 只有一个元素
 	s := a[0:1]
 	t.Logf("len:%d\t cap:%d\t %v\n", len(s), cap(s), s)
-	// 对 s 进行切片操作,注意 i j 大于 len(s) 是合法的
+	// 对 s 进行切片操作,注意 i j 大于 len(s) 是合法的,如果 slice 的引用超过被引用对象的长度,即len(s),那么最终的 slice 会比原 slice 长
 	s1 := s[4:6]
 	t.Logf("len:%d\t cap:%d\t %v\n", len(s1), cap(s1), s1)
 }
