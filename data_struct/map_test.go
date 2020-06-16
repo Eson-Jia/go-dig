@@ -8,7 +8,7 @@ import (
 )
 
 // 在对 map 进行取值操作的时候,即使键不存在也不会报错
-func TestMapKeyNotExist(t *testing.T) {
+func TestKeyNotExist(t *testing.T) {
 	m := make(map[string]int)
 	//1. 使用一元取值符取值不存在时会返回类型零值
 	v1 := m["dog"]
@@ -22,7 +22,7 @@ func TestMapKeyNotExist(t *testing.T) {
 }
 
 // 值为 nil 的 map 可以安全的执行 查找 删除 range 遍历 和 len
-func TestMapIsNil(t *testing.T) {
+func TestIsNil(t *testing.T) {
 	var m map[string]int
 	fmt.Println("is nil:", m == nil)
 	//1. 查找
@@ -81,7 +81,7 @@ func TestRangeAndDelete(t *testing.T) {
 }
 
 // 每次遍历 map 的顺序是不固定的
-func TestMapRangeKey(t *testing.T) {
+func TestRangeKey(t *testing.T) {
 	m := map[string]int{
 		"a": 1,
 		"b": 2,
@@ -105,7 +105,7 @@ func TestMapRangeKey(t *testing.T) {
 }
 
 // 因为 map 遍历顺序是不固定的,所以如果想顺序遍历的话需要在外面先对 key 进行排序
-func TestMapSorted(t *testing.T) {
+func TestSorted(t *testing.T) {
 	m := map[string]int{
 		"a": 1,
 		"b": 2,
@@ -121,4 +121,21 @@ func TestMapSorted(t *testing.T) {
 	for _, k := range keys {
 		fmt.Printf("%s ==> %d\n", k, m[k])
 	}
+}
+
+// map 的值类型可以是复合类型,如 map slice 等
+func TestValueIsMap(t *testing.T) {
+	graph := make(map[string]map[string]bool)
+	AddEdge := func(from, to string) {
+		edges := graph[from]
+		if edges == nil {
+			edges = make(map[string]bool)
+		}
+		graph[from] = edges
+		edges[to] = true
+	}
+	HasEdge := func(from, to string) bool {
+		return graph[from][to]
+	}
+	fmt.Println(AddEdge, HasEdge)
 }
