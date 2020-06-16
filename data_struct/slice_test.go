@@ -47,8 +47,8 @@ func TestSliceIsReference(t *testing.T) {
 	{
 		a1 := [...]string{"cat", "dog", "mouse", "pig", "monkey"}
 		s4 := a1[0:1]
-		s4 = append(s4,"tidy")
-		log.Println("a1:",a1,"s4:",s4)
+		s4 = append(s4, "tidy")
+		log.Println("a1:", a1, "s4:", s4)
 	}
 }
 
@@ -60,6 +60,7 @@ type IntSlice struct {
 	len int
 	cap int
 }
+
 func TestSliceAppend(t *testing.T) {
 
 	// slice
