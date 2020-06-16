@@ -13,10 +13,21 @@
 
 #### slice make
 
-slice 使用 make 参数是`type`以及可选的
 slice := make([]string[,len[,cap]])
+slice 使用 make 参数是`type`紧接着两个可选参数分别表示 len 和 cap 分别用于设置 slice 的 len 和 cap
+len 如果不提供默认为 0, cap 如果不提供默认为 len,注意 len<=cap 否则会报错
 
+#### map make
 
+map := make(map[string]int[,size])
+map 的 size 用于控制创建 map 时 预先创建 size 个元素的内存空间
+
+#### channel make
+
+channel := make(chan struct {}[,buff_size])
+buff_size 用于控制创建的 channel 缓存的大小,如果省略或者为零的话这就是无缓存 chan,否则就是有缓存 chan
+
+###
 channel := make(chan struct{},)
 
 ## map
