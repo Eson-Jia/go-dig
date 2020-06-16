@@ -137,5 +137,6 @@ func TestValueIsMap(t *testing.T) {
 	HasEdge := func(from, to string) bool {
 		return graph[from][to]
 	}
-	fmt.Println(AddEdge, HasEdge)
+	AddEdge("a", "b")
+	fmt.Println(HasEdge("a", "b"))
 }

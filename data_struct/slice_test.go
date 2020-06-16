@@ -90,3 +90,7 @@ func TestSliceOperator(t *testing.T) {
 	s1 := s[4:6]
 	t.Logf("len:%d\t cap:%d\t %v\n", len(s1), cap(s1), s1)
 }
+
+// slice 除了跟 nil 比较无法跟其他
+func TestSliceCompare(t *testing.T) {
+}

@@ -1,5 +1,24 @@
 # data struct
 
+## 对比
+
+### map slice array struct 可比较性
+
+- array:如果元素类型是可比较的,数组就是可比较的.比较结果是两边元素的值是否完全相同
+- slice:和数组不同 slice 无法做比较,因此不能用`==`来测试两个 slice 是否拥有相同的元素,slice 唯一允许的比较操作和是 nil 作比较
+- map:和 slice 一样,map 不可比较,唯一合法的比较就是和 nil 做比较. 为了判断两个 map 是否拥有相同的键值对,必须使用循环
+- struct: 如果所有的 field 是可比较的,那么这个`struct`就是可比较的
+
+### slice channel map 的 make
+
+#### slice make
+
+slice 使用 make 参数是`type`以及可选的
+slice := make([]string[,len[,cap]])
+
+
+channel := make(chan struct{},)
+
 ## map
 
 ## 引用类型
