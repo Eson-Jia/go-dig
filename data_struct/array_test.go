@@ -18,3 +18,28 @@ func TestArrayCompare(t *testing.T) {
 	*  fmt.Println(a1 ==a4)
 	 */
 }
+
+// 如果元素类型是不可比较的那么这个数组也是不可比较的
+func TestArrayWithIncomparableElement(t *testing.T) {
+	arrayOfSlice1 := [3][]int{
+		{
+			1, 2, 3,
+		},
+		{
+			1, 2, 3, 4, 5, 6,
+		},
+		{
+			4, 5, 6,
+		},
+	}
+	arrayOfSlice2 := arrayOfSlice1
+	fmt.Println(arrayOfSlice1, arrayOfSlice2)
+	/**
+	slice 是不可以比较的类型,用来作 array 的元素的话,这个数组也是不可比较的
+	下面的 == 比较会报错 Invalid operation: arrayOfSlice1 == arrayOfSlice2 (operator == is not defined on [3][]int)
+	if arrayOfSlice1 == arrayOfSlice2 {
+		fmt.Println("equal")
+	}
+	*/
+
+}
