@@ -1,6 +1,7 @@
 package data_struct
 
 import (
+	"fmt"
 	"log"
 	"testing"
 )
@@ -91,6 +92,16 @@ func TestSliceOperator(t *testing.T) {
 	t.Logf("len:%d\t cap:%d\t %v\n", len(s1), cap(s1), s1)
 }
 
-// slice 除了跟 nil 比较无法跟其他
+// slice 无法进行比较操作,除了跟 nil 进行比较
 func TestSliceCompare(t *testing.T) {
+	s1 := []int{1, 2, 3, 4, 5}
+	s2 := s1
+	fmt.Println(s1, s2)
+	/**
+	slice 无法跟 nil 之外的表达式比较,否则会报语法错误:
+	Invalid operation: s1 == s2 (operator == is not defined on []int)
+		if s1 == s2 {
+	}
+	**/
+
 }
