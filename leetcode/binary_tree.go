@@ -31,8 +31,10 @@ func walk(node *TreeNode, max Max) (Max, bool) {
 	if returnMax.Modified && returnMax.Current >= node.Val {
 		return returnMax, false
 	}
-	returnMax.Modified = true
-	returnMax.Current = node.Val
+	returnMax = Max{
+		Current:  node.Val,
+		Modified: true,
+	}
 	returnMax, result = walk(node.Right, returnMax)
 	if !result {
 		return returnMax, result
