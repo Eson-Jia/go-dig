@@ -6,38 +6,42 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-type Max struct {
-	Current  int
+type Previous struct {
+	Value    int
 	Modified bool
 }
 
 func isValidBST(root *TreeNode) bool {
-	max := Max{
-		Current:  0,
+	previous := Previous{
+		Value:    0,
 		Modified: false,
 	}
-	_, result := walk(root, max)
+	_, result := walk(root, previous)
 	return result
 }
 
-func walk(node *TreeNode, max Max) (Max, bool) {
+func walk(node *TreeNode, previous Previous) (Previous, bool) {
 	if node == nil {
-		return max, true
+		return previous, true
 	}
-	returnMax, result := walk(node.Left, max)
-	if !result {
-		return returnMax, result
+	newPrevious, valid := walk(node.Left, previous)
+	if !valid {
+		return newPrevious, false
 	}
-	if returnMax.Modified && returnMax.Current >= node.Val {
-		return returnMax, false
+	if newPrevious.Modified && newPrevious.Value >= node.Val {
+		return newPrevious, false
 	}
-	returnMax = Max{
-		Current:  node.Val,
+	newPrevious = Previous{
+		Value:    node.Val,
 		Modified: true,
 	}
-	returnMax, result = walk(node.Right, returnMax)
-	if !result {
-		return returnMax, result
+	newPrevious, valid = walk(node.Right, newPrevious)
+	if !valid {
+		return newPrevious, false
 	}
-	return returnMax, true
+	return newPrevious, true
+}
+
+func ConstructBT([]int) (root *TreeNode, err error) {
+	return nil, nil
 }
