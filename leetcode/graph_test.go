@@ -182,16 +182,16 @@ func TestGardenNoAdj(t *testing.T) {
 		{
 			3,
 			[][]int{
-				[]int{1,2},
-				[]int{2,3},
-				[]int{1,3},
+				[]int{1, 2},
+				[]int{2, 3},
+				[]int{1, 3},
 			},
 		},
 		{
 			4,
 			[][]int{
-				[]int{1,2},
-				[]int{3,4},
+				[]int{1, 2},
+				[]int{3, 4},
 			},
 		},
 		{
@@ -207,7 +207,7 @@ func TestGardenNoAdj(t *testing.T) {
 		},
 	}
 	for _, suit := range suits {
-		t.Log(gardenNoAdj(suit.N, suit.Paths))
+		t.Log(gardenNoAdjSecond(suit.N, suit.Paths))
 	}
 }
 
@@ -215,8 +215,14 @@ func TestGardenNoAdj(t *testing.T) {
 // version 1.0
 // 这里的想法是先挑一个点(A)，染成第一种颜色(1)，然后找到与这个点相邻的点(比如B,C,D)，分别染成其他三种颜色(2,3,4)，
 // 然后再找到跟这些点相邻的点，再染色，就这样广度优先遍历染色。
-// 这个方法是有问题的，问题就是在给B染色的时候是依据A的颜色，同时还依据了(C,D)的颜色，而B与(C,D)可能并不相邻，如果(B,C,D)不相邻的话，
-// 可以将(B,C,D)全都都染成颜色 2
+// 这个方法是有问题的，问题就是在给B染色的时候依据与其相邻的A颜色的同时，还依据了(C,D)的颜色，而B与(C,D)可能并不相邻，如果(B,C,D)不相邻的话，
+// 可以将(B,C,D)全都都染成颜色 2。我们在给一个顶点染色的时候，只需要参考与其相邻的顶点的颜色，这个我们没有做到这一点。
+
+// version 2.0
+// 因为顶点最多有三个条边，而有四种颜色，假设相邻的三个顶点颜色各不相同，那么该顶点也有第四个颜色可以使用。
+// 所以无论如何都可以在某个顶点选择一种颜色不与相邻顶点的颜色重合
+// 这里采用广度优先算法遍历无向图，因为该图不一定是强连通性的，所有需要遍历顶点来使用广度优先算法。
+
 func gardenNoAdj(N int, paths [][]int) []int {
 	graph := make([][]int, N+1)
 	for _, path := range paths {
@@ -231,44 +237,44 @@ func gardenNoAdj(N int, paths [][]int) []int {
 		graph[b] = append(graph[b], a)
 	}
 	colored := make([]int, N+1)
-	isOpened := make([]bool, N+1)
-	wf := func(point int) {
+	// 广度优先
+	breadthFirst := func(point int) {
 		queue := make([]int, 0)
 		queue = append(queue, point)
-		colored[point] = 1
 		for len(queue) > 0 {
 			head := queue[0]
 			queue = queue[1:]
-			allColor := []bool{false, true, true, true, true}
-			allColor[colored[head]] = false
-			if isOpened[head] {
+			if colored[head] != 0 {
 				continue
 			}
 			allPoints := graph[head]
+			canUseColor := []bool{false, true, true, true, true}
 			for _, point := range allPoints {
-				if colored[point] == 0 {
-					for colorIndex := 0; colorIndex < len(allColor); colorIndex++ {
-						if allColor[colorIndex] {
-							allColor[colorIndex] = false
-							colored[point] = colorIndex
-							break
-						}
-					}
+				if colored[point] != 0 {
+					canUseColor[colored[point]] = false
+				} else {
+					queue = append(queue, point)
 				}
-				queue = append(queue, point)
 			}
-			isOpened[head] = true
+			for colorIndex, canUse := range canUseColor {
+				if canUse {
+					colored[head] = colorIndex
+					break
+				}
+			}
 		}
 	}
 	for i := 1; i <= N; i++ {
-		if !isOpened[i] {
-			wf(i)
+		if colored[i] == 0 {
+			breadthFirst(i)
 		}
 	}
 	return colored[1:]
 }
 
 // 1042. 不邻接植花
+// 这里没有采用深度优先或者广度优先算法，因为不需要保存路径
+// 直接遍历所有顶点，在为顶点染色的时候考虑邻接顶点的颜色
 func gardenNoAdjSecond(N int, paths [][]int) []int {
 	graph := make([][]int, N+1)
 	for _, path := range paths {
@@ -283,7 +289,19 @@ func gardenNoAdjSecond(N int, paths [][]int) []int {
 		graph[b] = append(graph[b], a)
 	}
 	colored := make([]int, N+1)
-	for i := 1; i < N; i++ {
+	for currentVertex := 1; currentVertex < N+1; currentVertex++ {
+		canUseColor := []bool{false, true, true, true, true}
+		for _, vertex := range graph[currentVertex] {
+			if colored[vertex] != 0 {
+				canUseColor[colored[vertex]] = false
+			}
+		}
+		for colorIndex, canUse := range canUseColor {
+			if canUse{
+				colored[currentVertex]=colorIndex
+				break
+			}
+		}
 	}
 	return colored[1:]
 }
