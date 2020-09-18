@@ -102,41 +102,39 @@ func TestTriplets(t *testing.T) {
 
 // 1577. 数的平方等于两数乘积的方法数
 func numTriplets(nums1 []int, nums2 []int) int {
-	allCount := 0
-	theFunc := func(nums1 []int, nums2 []int) {
-		nums1Pow := make([]int, len(nums1))
-		for i := 0; i < len(nums1); i++ {
-			nums1Pow[i] = nums1[i] * nums1[i]
-		}
-		nums2Multi := make([][]int, len(nums2))
-		for j := 0; j < len(nums2)-1; j++ {
-			nums2Multi[j] = make([]int, len(nums2))
-			for k := j + 1; k < len(nums2); k++ {
-				nums2Multi[j][k] = nums2[j] * nums2[k]
+	multi := func(num []int) [][]int {
+		result := make([][]int, len(num))
+		for i := 0; i < len(num); i++ {
+			result[i] = make([]int, len(num))
+			for j := i; j < len(num); j++ {
+				result[i][j] = num[i] * num[j]
 			}
 		}
-		numToCount := make(map[int]int)
-		for i := 0; i < len(nums1); i++ {
-			count, ok := numToCount[nums1Pow[i]]
+		return result
+	}
+	multiNums1, multiNums2 := multi(nums1), multi(nums2)
+	countNums := func(multiNums1 [][]int, multiNums2 [][]int) int {
+		allCount := 0
+		countMap := make(map[int]int)
+		for i := 0; i < len(multiNums1); i++ {
+			count, ok := countMap[multiNums1[i][i]]
 			if ok {
 				allCount += count
 				continue
 			}
-			count = 0
-			for j := 0; j < len(nums2)-1; j++ {
-				for k := 0; k < len(nums2); k++ {
-					if nums1Pow[i] == nums2Multi[j][k] {
-						count += 1
+			for j := 0; j < len(multiNums2)-1; j++ {
+				for k := j + 1; k < len(multiNums2); k++ {
+					if multiNums1[i][i] == multiNums2[j][k] {
+						count++
 					}
 				}
 			}
-			numToCount[nums1Pow[i]] = count
 			allCount += count
+			countMap[multiNums1[i][i]] = count
 		}
+		return allCount
 	}
-	theFunc(nums1, nums2)
-	theFunc(nums2, nums1)
-	return allCount
+	return countNums(multiNums1, multiNums2) + countNums(multiNums2, multiNums1)
 }
 
 // 1041. 困于环中的机器人
