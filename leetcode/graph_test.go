@@ -100,25 +100,43 @@ func TestTriplets(t *testing.T) {
 	t.Log(numTriplets([]int{7, 7, 8, 3}, []int{1, 2, 9, 7}))
 }
 
+// 1577. 数的平方等于两数乘积的方法数
 func numTriplets(nums1 []int, nums2 []int) int {
-	count := 0
+	allCount := 0
 	theFunc := func(nums1 []int, nums2 []int) {
+		nums1Pow := make([]int, len(nums1))
 		for i := 0; i < len(nums1); i++ {
+			nums1Pow[i] = nums1[i] * nums1[i]
+		}
+		nums2Multi := make([][]int, len(nums2))
+		for j := 0; j < len(nums2)-1; j++ {
+			nums2Multi[j] = make([]int, len(nums2))
+			for k := j + 1; k < len(nums2); k++ {
+				nums2Multi[j][k] = nums2[j] * nums2[k]
+			}
+		}
+		numToCount := make(map[int]int)
+		for i := 0; i < len(nums1); i++ {
+			count, ok := numToCount[nums1Pow[i]]
+			if ok {
+				allCount += count
+				continue
+			}
+			count = 0
 			for j := 0; j < len(nums2)-1; j++ {
-				for k := j + 1; k < len(nums2); k++ {
-					if (nums1[i] > nums2[j] && nums1[i] > nums2[k]) || (nums1[i] < nums2[j] && nums1[i] < nums2[k]) {
-						continue
-					}
-					if nums1[i]*nums1[i] == nums2[j]*nums2[k] {
-						count++
+				for k := 0; k < len(nums2); k++ {
+					if nums1Pow[i] == nums2Multi[j][k] {
+						count += 1
 					}
 				}
 			}
+			numToCount[nums1Pow[i]] = count
+			allCount += count
 		}
 	}
 	theFunc(nums1, nums2)
 	theFunc(nums2, nums1)
-	return count
+	return allCount
 }
 
 // 1041. 困于环中的机器人
@@ -297,11 +315,104 @@ func gardenNoAdjSecond(N int, paths [][]int) []int {
 			}
 		}
 		for colorIndex, canUse := range canUseColor {
-			if canUse{
-				colored[currentVertex]=colorIndex
+			if canUse {
+				colored[currentVertex] = colorIndex
 				break
 			}
 		}
 	}
 	return colored[1:]
+}
+
+// 172. 阶乘后的零
+// 给定一个整数 n，返回 n! 结果尾数中零的数量。
+// 尾数中零的数量就是10的多少次方，也就是多少个10相乘,10=10*1=5*2,分解成质数就是5*2
+// 那么我们要做的就是统计（1....n）中5和2因子的个数，设5的个数为n,2的个数为m.那么min(n,m)即为尾数中零的个数，
+// 由常识可知，n < m，所以我们只需要统计 5 因子的个数
+// 在 5,10,15,20,25数中，(5,10,15,20) 分别包含了一个5因子，而25包含了2个
+// 由规律看出一个数包含的因子数为该数可以连续整除5多少次
+// 而(1...n)递增数列中的5因子个数为所有数5因子个数之和
+func trailingZeroes(n int) int {
+	num5 := 0
+	for n > 1 {
+		num5 += n / 5
+		n /= 5
+	}
+	return num5
+}
+
+func TestTrailingZeroes(t *testing.T) {
+	t.Log(trailingZeroes(30))
+}
+
+// 645. 错误的集合
+// (1-n) 先找出重复的数字，再找出缺失的数字
+// 额
+func findErrorNums(nums []int) []int {
+	length := len(nums)
+	marked := make([]bool, length+1)
+	duplicate := 0
+	missing := 0
+	sum := 0
+	for _, num := range nums {
+		sum += num
+		if !marked[num] {
+			marked[num] = true
+		} else {
+			duplicate = num
+		}
+	}
+	missing = duplicate - (sum - ((length+1)*length)/2)
+	return []int{duplicate, missing}
+}
+
+func TestFindErrorNums(t *testing.T) {
+	t.Log(findErrorNums([]int{1, 2, 2, 4}))
+}
+
+//1583. 统计不开心的朋友
+
+func unhappyFriends(n int, preferences [][]int, pairs [][]int) int {
+	count := 0
+	pairsMap := make(map[int]int)
+
+	for _, pair := range pairs {
+		pairsMap[pair[0]] = pair[1]
+		pairsMap[pair[1]] = pair[0]
+	}
+	PreferencesIndex := make([][]int, n)
+	for i, preference := range preferences {
+		PreferencesIndex[i] = make([]int, n)
+		for index, friend := range preference {
+			PreferencesIndex[i][friend] = n - 1 - index
+		}
+	}
+	for a, b := range pairsMap {
+		for _, betterFriend := range preferences[a] {
+			//break 之前的朋友都是关系好过 b 的朋友
+			if betterFriend == b {
+				break
+			}
+			ABetterFriendPair := pairsMap[betterFriend]
+			if PreferencesIndex[betterFriend][a] > PreferencesIndex[betterFriend][ABetterFriendPair] {
+				count += 1
+				// 这里必须添加因为一个不开心的朋友可以不开心很多次
+				break
+			}
+		}
+	}
+	return count
+}
+
+func TestUnhappyFriends(t *testing.T) {
+	suit := struct {
+		N           int
+		Preferences [][]int
+		Pairs       [][]int
+	}{
+		4,
+		[][]int{[]int{1, 2, 3}, []int{3, 2, 0}, []int{3, 1, 0}, []int{1, 2, 0}},
+		[][]int{[]int{0, 1}, []int{2, 3}},
+	}
+	t.Log(unhappyFriends(suit.N, suit.Preferences, suit.Pairs))
 }
