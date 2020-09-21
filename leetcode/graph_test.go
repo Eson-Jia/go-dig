@@ -414,3 +414,21 @@ func TestUnhappyFriends(t *testing.T) {
 	}
 	t.Log(unhappyFriends(suit.N, suit.Preferences, suit.Pairs))
 }
+
+// 黑白画
+
+func paintingPlan(n, k int) int {
+	count := k / n
+	rest := k % n
+	C23 := 0
+	if count == 0 {
+		return 0
+	}
+	if rest == 0 {
+		return 2 * C23
+	}
+	if rest == n-(count-1) {
+
+	}
+	return 0
+}
