@@ -75,6 +75,13 @@ func extendedMemoizedCutRod(price []int, firstCut []int, result []int, len int) 
 	return 0
 }
 
-func PrintExtendedMemoizedCutRod() {
+//面试题 08.01. 三步问题
 
+func waysToStep(n int) int {
+	//stepRecord := map[int]int{1: 1,2:2,3:}
+	for i := 1; i <= n; i++ {
+		if n == 1 {
+		}
+	}
+	return 0
 }
