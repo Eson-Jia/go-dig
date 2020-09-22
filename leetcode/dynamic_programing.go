@@ -70,7 +70,7 @@ func ExtendedMemoizedCutRod(price []int, len int) ([]int, []int) {
 func extendedMemoizedCutRod(price []int, firstCut []int, result []int, len int) int {
 	max := -1
 	for i := 0; i < len+1; i++ {
-		max = getMax(max,extendedMemoizedCutRod(price,firstCut,result,i)+1)
+		max = getMax(max, extendedMemoizedCutRod(price, firstCut, result, i)+1)
 	}
 	return 0
 }

@@ -6,4 +6,3 @@ func getMax(a, b int) int {
 	}
 	return b
 }
-
