@@ -13,6 +13,14 @@ func TestButtonUpCutRod(t *testing.T) {
 	}
 }
 
+func TestCutRod(t *testing.T) {
+	price := []int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
+	for i := 1; i <= 10; i++ {
+		result := cutRod(price[:], i)
+		fmt.Println("result:", result)
+	}
+}
+
 func TestPrintButtonUpCutRod(t *testing.T) {
 	price := [...]int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
 	expectResult := struct {
