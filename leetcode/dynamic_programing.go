@@ -98,12 +98,28 @@ func extendedMemoizedCutRod(price []int, firstCut []int, result []int, len int) 
 }
 
 //面试题 08.01. 三步问题
-
+// 这是很基础的动态规划
+// 我们考虑现在已经n阶上面，有几种方法一步走到n阶呢，我们可以在n-1阶上走一步1阶到n,也可以在 n-2 阶走一步2阶，也可以在n-3阶走一步3阶
+// 那么 一共有 f(n) = f(n-1)+f(n-2)+f(n-3)种走法
+// 动态规划有两要素：最优子结构，重叠子问题
+// 这里有多少种走法就是该问题的唯一解，也可以理解为最优解
+// n 的解是 n-1,n-2,n-3 子问题的解的和
+// 重叠子问题，如果递归算法反复求解子问题，我们就称最优化问题具有重叠子问题性质
+// f(n) = f(n-1)+f(n-2)+f(n-3)
+// f(n-1) = f(n-2)+f(n-3)+f(n-4)
+// 可以看出求解子问题并不会引出更多的子问题
 func waysToStep(n int) int {
-	//stepRecord := map[int]int{1: 1,2:2,3:}
-	for i := 1; i <= n; i++ {
-		if n == 1 {
+	result := make([]int, n+1)
+	result[0] = 1
+	result[1] = 1
+	for i := 2; i <= n; i++ {
+		count := 0
+		// 注意这里 j可以等于i,因为如果 n <=3 我们一步就可以走到
+		for j := 1; j <= i && j <= 3; j++ {
+			count += result[i-j]
+			count %= 1000000007
 		}
+		result[i] = count
 	}
-	return 0
+	return result[n]
 }

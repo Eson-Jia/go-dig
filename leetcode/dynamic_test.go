@@ -50,3 +50,20 @@ func TestMemoizedCutRod(t *testing.T) {
 		}
 	}
 }
+
+func TestWaysToStep(t *testing.T) {
+	suits := []struct {
+		Input  int
+		Expect int
+	}{
+		{
+			3,
+			4,
+		},
+	}
+	for _, suit := range suits {
+		if result := waysToStep(suit.Input); suit.Expect != result {
+			t.Errorf("input:%x,expect:%x,got:%x", suit.Input, suit.Expect, result)
+		}
+	}
+}
