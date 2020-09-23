@@ -6,9 +6,12 @@ import (
 )
 
 func TestButtonUpCutRod(t *testing.T) {
-	price := [...]int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
+	price := []int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
 	for i := 1; i <= 10; i++ {
-		result := ButtonUpCutRod(price[:], i)
+		result := ButtonUpCutRod(price, i)
+		if result != cutRod(price, i) {
+			t.Error("test failed")
+		}
 		fmt.Println("result:", result)
 	}
 }
@@ -22,15 +25,15 @@ func TestCutRod(t *testing.T) {
 }
 
 func TestPrintButtonUpCutRod(t *testing.T) {
-	price := [...]int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
+	price := []int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
 	expectResult := struct {
-		Amount [11]int
-		First  [11]int
+		Amount []int
+		First  []int
 	}{
-		[11]int{0, 1, 5, 8, 10, 13, 17, 18, 22, 25, 30},
-		[11]int{0, 1, 2, 3, 2, 2, 6, 1, 2, 3, 10},
+		[]int{0, 1, 5, 8, 10, 13, 17, 18, 22, 25, 30},
+		[]int{0, 1, 2, 3, 2, 2, 6, 1, 2, 3, 10},
 	}
-	amount, first := ExtendedButtonUpCutRod(price[:], 10)
+	amount, first := ExtendedButtonUpCutRod(price, 10)
 	for i := 0; i < 11; i++ {
 		if expectResult.Amount[i] != amount[i] || expectResult.First[i] != first[i] {
 			t.Fatal("unexpect result")
@@ -40,8 +43,10 @@ func TestPrintButtonUpCutRod(t *testing.T) {
 }
 
 func TestMemoizedCutRod(t *testing.T) {
-	price := [...]int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
-	for i := 0; i < 11; i++ {
-		fmt.Printf("len:%d result:%d\n", i, MemoizedCutRod(price[:], i))
+	price := []int{0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30}
+	for i := 0; i <= 10; i++ {
+		if MemoizedCutRod(price, i) != cutRod(price, i) {
+			t.Errorf("length:%d,MemoizedCutRod=%d,cutRod=%d", i, MemoizedCutRod(price, i), cutRod(price, i))
+		}
 	}
 }
