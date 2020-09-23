@@ -75,7 +75,7 @@ func memoizedCutRod(price []int, result []int, length int) int {
 	}
 	max := -1
 	for i := 0; i < length+1; i++ {
-		max = getMax(max, memoizedCutRod(price, result, 0)+price[length-i])
+		max = getMax(max, memoizedCutRod(price, result, i)+price[length-i])
 	}
 	return max
 }
