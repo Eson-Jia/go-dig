@@ -74,9 +74,11 @@ func memoizedCutRod(price []int, result []int, length int) int {
 		return result[length]
 	}
 	max := -1
-	for i := 0; i < length+1; i++ {
-		max = getMax(max, memoizedCutRod(price, result, i)+price[length-i])
+	// i 在这里是被切去的部分，i不大于总长度且不大于 price 表中最大的长度
+	for i := 1; i <= length && i < len(price); i++ {
+		max = getMax(max, price[i]+memoizedCutRod(price, result, length-i))
 	}
+	result[length] = max
 	return max
 }
 
