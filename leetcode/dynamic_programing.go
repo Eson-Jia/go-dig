@@ -59,21 +59,23 @@ func PrintButtonUpCutRod(price []int, len int) {
 	}
 }
 
-func MemoizedCutRod(price []int, len int) int {
-	result := make([]int, len+1)
-	return memoizedCutRod(price, result, len)
+// 现在这个函数有问题，当 length 超过 price 的长度以后就会报错 index out of range
+// 这是因为切去部分的长度不能超过 price 表中最大的长度
+func MemoizedCutRod(price []int, length int) int {
+	result := make([]int, length+1)
+	return memoizedCutRod(price, result, length)
 }
 
-func memoizedCutRod(price []int, result []int, len int) int {
-	if len == 0 {
+func memoizedCutRod(price []int, result []int, length int) int {
+	if length == 0 {
 		return 0
 	}
-	if result[len] > 0 {
-		return result[len]
+	if result[length] > 0 {
+		return result[length]
 	}
 	max := -1
-	for i := 0; i < len+1; i++ {
-		max = getMax(max, memoizedCutRod(price, result, 0)+price[len-i])
+	for i := 0; i < length+1; i++ {
+		max = getMax(max, memoizedCutRod(price, result, 0)+price[length-i])
 	}
 	return max
 }
