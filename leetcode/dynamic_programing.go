@@ -123,3 +123,20 @@ func waysToStep(n int) int {
 	}
 	return result[n]
 }
+
+// 1143. 最长公共子序列
+
+func longestCommonSubsequence(text1 string, text2 string) int {
+	return 0
+}
+
+// 疑问，最长公共子序列和最长公共子串的共同点在哪里，是否可以转化？
+// 我认为最长公共子串是最长公共子序列的特殊情况。特殊点是公共子串每个字符之间没有其他不同的字符。所以公共子序列的算法在
+// 公共子串上同样试用。
+
+// 最长公共子串
+// 最优子结构  有限子问题域
+// 现在想如何实现最优子结构
+func longestCommonSubstring(text1 string, text2 string) int {
+	return 0
+}
