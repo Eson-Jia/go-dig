@@ -22,6 +22,7 @@ func TestMaxSUmRangeQuery(t *testing.T) {
 	suits := []struct {
 		Nums    []int
 		Request [][]int
+		Expect  int
 	}{
 		{
 			[]int{1, 2, 3, 4, 5},
@@ -31,9 +32,13 @@ func TestMaxSUmRangeQuery(t *testing.T) {
 				},
 				[]int{0, 1},
 			},
+			19,
 		},
 	}
 	for _, suit := range suits {
-		maxSumRangeQuerySecond(suit.Nums, suit.Request)
+		//maxSumRangeQuerySecond(suit.Nums, suit.Request)
+		if sum := maxSumRangeQueryFirst(suit.Nums, suit.Request); sum != suit.Expect {
+			t.Errorf("got %d expect %d", sum, suit.Expect)
+		}
 	}
 }
