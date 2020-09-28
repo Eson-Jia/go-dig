@@ -67,3 +67,32 @@ func TestWaysToStep(t *testing.T) {
 		}
 	}
 }
+
+func TestLCSLength(t *testing.T) {
+	text1, text2 := "ABCBDAB", "BDCABA"
+	_, b := LCSLength(text1, text2)
+	//for _, row := range c {
+	//	for _, v := range row {
+	//		fmt.Printf("%d  ", v)
+	//	}
+	//	fmt.Printf("\n")
+	//}
+	//fmt.Println()
+	//for _, row := range b {
+	//	for _, v := range row {
+	//		if v == 0 {
+	//			fmt.Print("0  ")
+	//		} else {
+	//			fmt.Printf("%c  ", v)
+	//		}
+	//
+	//	}
+	//	fmt.Printf("\n")
+	//}
+	LCSContent := PrintLCS(b, text1, len(text1), len(text2))
+	t.Logf("LCS:%s", LCSContent)
+	length := longestCommonSubsequence(text1, text2)
+	if length != len(LCSContent) {
+		t.Error("failed in test")
+	}
+}

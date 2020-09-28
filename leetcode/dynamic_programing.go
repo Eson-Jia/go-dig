@@ -125,9 +125,93 @@ func waysToStep(n int) int {
 }
 
 // 1143. 最长公共子序列
+// 最长公共子序列与最长公共子串的区别就是公共子序列中的元素在原始字符串 str1,str2 不需要连续，
+// 例如： A,C,A 就是 A,B,D,C,B,A 和 A,C,B,A 的一个公共子串，但不是最长公共子序列。A,C,B,A 是最长公共子序列
+// 而最长公共子串是 B,A
+// 因为公共子序列的性质，我们可以刻画最长公共子序列的性质，str1,str2 的最长子序列为 k，
+// 如果 str1[-1] == str2[-1], 那么 k[:-1] 是 str1[:-1] 和 str2[:-1]的最长公共子串
+// 如果 str1[-1] != str2[-1]
+// 		如果 str1[-1] != k[-1] 那么 k 是 str1[:-1] 和 str2 的 LCS
+//      如果 str2[-1] != k[-1] 那么 k 是 str1 和 str2[:-1] 的 LCS
+// 假设 str1,str2 长度分别为 rows,column,我们创建一个 c[rows][column] 的两维数组,
+// c[i][j]表示 str1 前 i 个元素与 str2 前 j 个元素的 LCS 的长度 ，例如，str1 前4个元素是 A,B,D,C ,str2 前 3个元素是 A,C,B
+// 那么他们的 LCS 就是 A,B   c[4][3] = 2
 
 func longestCommonSubsequence(text1 string, text2 string) int {
-	return 0
+	len1, len2 := len(text1), len(text2)
+	c := make([][]int, len1+1)
+	for i := 0; i < len1+1; i++ {
+		c[i] = make([]int, len2+1)
+	}
+	for i := 0; i < len1+1; i++ {
+		c[i][0] = 0
+	}
+	for j := 0; j < len2+1; j++ {
+		c[0][j] = 0
+	}
+	for i := 1; i < len1+1; i++ {
+		for j := 1; j < len2+1; j++ {
+			if text1[i-1] == text2[j-1] {
+				c[i][j] = c[i-1][j-1] + 1
+			} else if c[i-1][j] > c[i][j-1] {
+				c[i][j] = c[i-1][j]
+			} else {
+				c[i][j] = c[i][j-1]
+			}
+		}
+	}
+	return c[len1][len2]
+}
+
+// 计算 LCS 的长度
+// c[i][j]为 Xi 和 Yj LCS 的长度，Xi 和 Yj 有一个为 0 c[i][j]==0
+//
+//
+func LCSLength(text1, text2 string) ([][]int, [][]byte) {
+	len1, len2 := len(text1), len(text2)
+	c, b := make([][]int, len1+1), make([][]byte, len1+1)
+	for i := 0; i < len1+1; i++ {
+		c[i] = make([]int, len2+1)
+		b[i] = make([]byte, len2+1)
+	}
+	for i := 1; i <= len1; i++ {
+		for j := 1; j <= len2; j++ {
+			if text1[i-1] == text2[j-1] {
+				c[i][j] = c[i-1][j-1] + 1
+				b[i][j] = '\\'
+			} else if c[i-1][j] >= c[i][j-1] {
+				c[i][j] = c[i-1][j]
+				b[i][j] = '^'
+			} else {
+				c[i][j] = c[i][j-1]
+				b[i][j] = '<'
+			}
+		}
+	}
+	return c, b
+}
+
+func PrintLCS(b [][]byte, text1 string, i, j int) []byte {
+	buffer := make([]byte, 0)
+	var printLCS func([][]byte, string, int, int)
+	printLCS = func(b [][]byte, text1 string, i, j int) {
+		switch b[i][j] {
+		case '^':
+			printLCS(b, text1, i-1, j)
+		case '<':
+			printLCS(b, text1, i, j-1)
+		case '\\':
+			buffer = append(buffer, text1[i-1])
+			printLCS(b, text1, i-1, j-1)
+		}
+	}
+	printLCS(b, text1, i, j)
+	buffLen := len(buffer)
+	reverse := make([]byte, buffLen)
+	for i := buffLen - 1; i >= 0; i-- {
+		reverse[buffLen-1-i] = buffer[i]
+	}
+	return reverse
 }
 
 // 疑问，最长公共子序列和最长公共子串的共同点在哪里，是否可以转化？
