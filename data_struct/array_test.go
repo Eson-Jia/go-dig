@@ -41,5 +41,26 @@ func TestArrayWithIncomparableElement(t *testing.T) {
 		fmt.Println("equal")
 	}
 	*/
+}
 
+// 测试 [][]int 双重切片，第二层如何构造，使用 for _,row := range rows 拿到的第二层数组变量之后调用 make 是否能够正常构造一个二维数组，
+// 我认为在使用 range 的情况下是不行的，因为 row 只是 原始数组的拷贝，对它进行修改不会进影响原始的数组，就跟在一个函数中修改 slice 一样，
+// 函数外的 slice 不受影响（对 slice 重新赋值，外层数组不受影响。如果只是修改 slice元素内容，那么外层 slice 也会相应改变）。
+// 经过我测试，发现情况的确如上所述，而且这段代码都不能通过编译，因为 row 变量只赋值的话会报错 Unused variable 'row'
+func TestDoubleSlice(t *testing.T) {
+	doubleSlice := make([][]int, 10)
+	for _, row := range doubleSlice {
+		row = make([]int, 10)
+		row[0] = 100 // 如果不加这就会报错：Unused variable 'row'
+	}
+	t.Log(doubleSlice) // [[] [] [] [] [] [] [] [] [] []]
+}
+
+// 所以正确的用法就是使用 for index
+func TestDoubleSliceInit(t *testing.T) {
+	doubleSlice := make([][]int, 10)
+	for i := 0; i < len(doubleSlice); i++ {
+		doubleSlice[i] = make([]int, 10)
+	}
+	t.Log(doubleSlice)
 }
