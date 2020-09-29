@@ -22,5 +22,5 @@ func constructorList(list []int) *ListNode {
 		}
 		previous = node
 	}
-	return nil
+	return head
 }
