@@ -2,6 +2,8 @@ package dance
 
 import (
 	"fmt"
+	"math"
+	"sort"
 	"testing"
 )
 
@@ -73,9 +75,6 @@ func deleteNode(node *ListNode) {
 
 //看到相似题目中有合并两个有序链表，突然来了灵感
 //我们可以将链表像拉链一样分开成两个子链表，然后再对子链表进行同样的操作，直到每个链表只剩一个元素，然后再将这些链表归并排序
-//func sortList(head *ListNode) *ListNode {
-//	return nil
-//}
 
 func sortList(head *ListNode) *ListNode {
 	next := head
@@ -146,4 +145,111 @@ func TestSortList(t *testing.T) {
 	head := constructorList(suits[1])
 	sortedHead := sortList(head)
 	fmt.Println(sortedHead)
+}
+
+//78. 子集
+//这是一个 2的n次幂的问题，每一个字符在子集中有出现或者不出现两个选项，所以有 2 的 n 次幂
+func subsets(nums []int) [][]int {
+	ret := make([][]int, 0)
+	length := len(nums)
+	lengthPow := int(math.Pow(2, float64(length)))
+	for i := 0; i < lengthPow; i++ {
+		array := make([]int, 0)
+		for j := 0; j < length; j++ {
+			if ((1 << j) & i) > 0 {
+				array = append(array, nums[j])
+			}
+		}
+		ret = append(ret, array)
+	}
+	return ret
+}
+
+//78. 子集
+
+func subsetsSecond(nums []int) [][]int {
+	return nil
+}
+
+//238. 除自身以外数组的乘积
+func productExceptSelf(nums []int) []int {
+	return nil
+}
+
+//136. 只出现一次的数字
+//将所有数字与非到一起
+func singleNumber(nums []int) int {
+	for i := 1; i < len(nums); i++ {
+		nums[0] ^= nums[i]
+	}
+	return nums[0]
+}
+
+//61. 旋转链表
+// 先遍历一边获取长度 length  k = k % length，
+// 将链表首尾相连，将 head 指针 向右移动 length - k 个位置
+func rotateRight(head *ListNode, k int) *ListNode {
+	if k == 0 {
+		return head
+	}
+	node, latest, length := head, head, 0
+	for node != nil {
+		latest = node
+		length += 1
+		node = node.Next
+	}
+	//注意这里，如果长度为 0 就直接返回 nil
+	if length == 0 {
+		return nil
+	}
+	k %= length
+	if k == 0 {
+		return head
+	}
+	latest.Next = head
+	for i := 0; i < length-k; i++ {
+		latest = head
+		head = head.Next
+	}
+	latest.Next = nil
+	return head
+}
+
+func TestRotateRight(t *testing.T) {
+	head := constructorList([]int{1, 2, 3, 4, 5})
+	ret := rotateRight(head, 2)
+	fmt.Println(ret)
+}
+
+//15. 三数之和
+func threeSum(nums []int) [][]int {
+	sort.Ints(nums)
+	length := len(nums)
+	if length < 3 {
+		return nil
+	}
+	for i := 0; i < length; i++ {
+		for j := i + 1; j < length; j++ {
+			//third := 0 - (nums[i] + nums[j])
+		}
+	}
+	return nil
+}
+
+//11. 盛最多水的容器
+func maxArea(height []int) int {
+	return 0
+}
+
+//46. 全排列
+// 这里要使用回溯算法
+
+func permute(nums []int) [][]int {
+	return nil
+}
+
+func dfs1(nums []int, left int) {
+	for i := 0; i < left; i++ {
+
+	}
 }

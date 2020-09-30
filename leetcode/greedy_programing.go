@@ -32,12 +32,6 @@ func greedyActivitySelector(s, f []int, n int) []int {
 }
 
 //1589. 所有排列中的最大和
-// 根据
-func maxSumRangeQuery(nums []int, requests [][]int) int {
-	return 0
-}
-
-//1589. 所有排列中的最大和
 //先使用 map 统计所有下标的请求次数，然后将 map 中的数据存入到 slice 中并按照请求次数排序，
 //最后将请求次数最多的下标设置为最大的数字，并依次类推计算总和。这个解决方案不行，最后通过了 72/84 个测试用例，没有通过的原因是超出时间限制
 func maxSumRangeQueryFirst(nums []int, requests [][]int) int {
