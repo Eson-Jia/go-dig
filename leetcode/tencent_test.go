@@ -156,7 +156,7 @@ func subsets(nums []int) [][]int {
 	for i := 0; i < lengthPow; i++ {
 		array := make([]int, 0)
 		for j := 0; j < length; j++ {
-			if ((1 << j) & i) > 0 {
+			if ((1 << uint(j)) & i) > 0 {
 				array = append(array, nums[j])
 			}
 		}
@@ -252,4 +252,83 @@ func dfs1(nums []int, left int) {
 	for i := 0; i < left; i++ {
 
 	}
+}
+
+func specialArray(nums []int) int {
+	//sort.Ints(nums)
+	for i := 0; i < len(nums); i++ {
+		count := 0
+		for j := 0; j < len(nums); j++ {
+			if i < nums[j] {
+				count += 1
+			}
+		}
+		if len(nums)-count == i {
+			return i
+		}
+	}
+	return -1
+}
+
+func isEvenOddTree(root *TreeNode) bool {
+	floor := 0
+	queue := make([]*TreeNode, 0)
+	queue = append(queue, root)
+	next := make([]*TreeNode, 0)
+	isOdd := func(a int) bool { return a%2 == 1 }
+	isEven := func(a int) bool { return a%2 == 0 }
+	isLess := func(a, b int) bool { return a < b }
+	isGreat := func(a, b int) bool { return a > b }
+	for {
+		var LessGreat func(int, int) bool
+		var OddEven func(int) bool
+		if floor%2 == 1 {
+			OddEven = isEven
+			LessGreat = isGreat
+
+		} else {
+			OddEven = isOdd
+			LessGreat = isLess
+		}
+		previous, isFirst := 0, true
+		for i := 0; i < len(queue); i++ {
+			theVal := queue[i].Val
+			if !OddEven(theVal) {
+				return false
+			}
+			if isFirst {
+				isFirst = false
+			} else if !LessGreat(previous, theVal) {
+				return false
+			}
+			if queue[i].Left != nil {
+				next = append(next, queue[i].Left)
+			}
+			if queue[i].Right != nil {
+				next = append(next, queue[i].Right)
+			}
+			previous = theVal
+		}
+		if len(next) == 0 {
+			break
+		}
+		queue = next
+		next = make([]*TreeNode, 0)
+		floor += 1
+	}
+	return true
+}
+
+func TestOdd(t *testing.T) {
+	root := &TreeNode{Val: 1}
+	root.Left = &TreeNode{Val: 10}
+	root.Right = &TreeNode{Val: 4}
+	root.Left.Left = &TreeNode{Val: 3}
+	root.Right.Left = &TreeNode{Val: 7}
+	root.Right.Right = &TreeNode{Val: 9}
+	root.Left.Left.Left = &TreeNode{Val: 12}
+	root.Left.Left.Right = &TreeNode{Val: 8}
+	root.Right.Left.Left = &TreeNode{Val: 6}
+	root.Right.Right.Right = &TreeNode{Val: 2}
+	t.Log(isEvenOddTree(root))
 }
