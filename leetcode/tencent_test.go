@@ -237,8 +237,57 @@ func threeSum(nums []int) [][]int {
 }
 
 //11. 盛最多水的容器
+//2020年10月14日09:46:06
+//感觉动态规划在这并不适用，因为没有找到最优子结构，那么同样贪心算法也不适用。
+//那么回溯算法呢，回溯算法可以用来测试某个选择是否适合，却不能用来寻找最优解，所以回溯算法也不适用。
+//暴力尝试的方法
 func maxArea(height []int) int {
-	return 0
+	length := len(height)
+	max := 0
+	for i := 0; i < length; i++ {
+		for j := i + 1; j < length; j++ {
+			if theArea := (j - i) * getMin(height[i], height[j]); theArea > max {
+				max = theArea
+			}
+		}
+	}
+	return max
+}
+
+//双指针解法
+// 好吧，官方提示使用双指针
+//我的思路是双指针分别指向数组的两端，计算出一个初始面积和左右指针两者的较大值，判断较大值在左边还是在右边
+//然后移动相反方向的指针，如果该指针下一位大于该指针前一个值就计算这时的面积并与最大值比较
+func maxAreaWithDoublePointer(height []int) int {
+	length := len(height)
+	left, right, max := 0, length-1, (length-1)*getMin(height[0], height[length-1])
+	for left != right {
+		switch {
+		case height[left] < height[right]:
+			for before := height[left]; height[left] <= before; left++ {
+				if right == left {
+					return max
+				}
+			}
+		case height[left] > height[right]:
+			fallthrough
+		default:
+			for before := height[right]; height[right] <= before; right-- {
+				if right == left {
+					return max
+				}
+			}
+		}
+		if theArea := (right - left) * getMin(height[left], height[right]); theArea > max {
+			max = theArea
+		}
+
+	}
+	return max
+}
+
+func TestMaxAreaWithDoublePointer(t *testing.T) {
+	t.Log(maxAreaWithDoublePointer([]int{1, 8, 6, 2, 5, 4, 8, 3, 7}))
 }
 
 //46. 全排列
