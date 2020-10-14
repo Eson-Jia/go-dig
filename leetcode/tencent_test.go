@@ -262,16 +262,13 @@ func maxAreaWithDoublePointer(height []int) int {
 	length := len(height)
 	left, right, max := 0, length-1, (length-1)*getMin(height[0], height[length-1])
 	for left != right {
-		switch {
-		case height[left] < height[right]:
+		if height[left] < height[right] {
 			for before := height[left]; height[left] <= before; left++ {
 				if right == left {
 					return max
 				}
 			}
-		case height[left] > height[right]:
-			fallthrough
-		default:
+		} else {
 			for before := height[right]; height[right] <= before; right-- {
 				if right == left {
 					return max
@@ -281,7 +278,25 @@ func maxAreaWithDoublePointer(height []int) int {
 		if theArea := (right - left) * getMin(height[left], height[right]); theArea > max {
 			max = theArea
 		}
+	}
+	return max
+}
 
+func maxAreaRegular(height []int) int {
+	length := len(height)
+	left, right, max := 0, length-1, 0
+	for left != right {
+		l, r, area := height[left], height[right], 0
+		if l > r {
+			area = (right - left) * r
+			right--
+		} else {
+			area = (right - left) * l
+			left++
+		}
+		if max < area {
+			max = area
+		}
 	}
 	return max
 }
