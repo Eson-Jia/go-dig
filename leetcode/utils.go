@@ -18,3 +18,10 @@ func IntEqual(a, b []int) bool {
 	}
 	return true
 }
+
+func getMin(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
