@@ -46,16 +46,16 @@ func search(nums []int, target int) int {
 func minArray(numbers []int) int {
 	length := len(numbers)
 	low, high := 0, length-1
-	for low <= high {
-		middle := (low + high) / 2
-		if numbers[middle] < numbers[low] && numbers[middle] < numbers[high] {
-			return numbers[middle]
+	for low < high-1 {
+		if numbers[low]<=numbers[high]{
+			return numbers[low]
 		}
+		middle := (low + high) / 2
 		if numbers[low] < numbers[middle] {
 			low = middle
 		} else {
 			high = middle
 		}
 	}
-	panic("not found")
+	return numbers[high]
 }

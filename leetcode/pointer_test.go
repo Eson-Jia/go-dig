@@ -131,3 +131,116 @@ func postorderTraversal(root *TreeNode) []int {
 	}
 	return ret
 }
+
+//142. 环形链表 II
+//哈希表
+//将遍历过的节点指针都存入哈希表
+//如果遇到之前存入的节点即为入环的第一个节点
+func detectCycle(head *ListNode) *ListNode {
+	set := make(map[*ListNode]struct{})
+	node := head
+	for node != nil {
+		if _, ok := set[node]; ok {
+			return node
+		} else {
+			set[node] = struct{}{}
+		}
+		node = node.Next
+	}
+	return nil
+}
+
+//142. 环形链表 II
+//快慢指针
+func detectCycleFastSlowPointer(head *ListNode) *ListNode {
+	fast, slow, p := head, head, head
+	flag := 0
+	for {
+		if fast == nil {
+			return nil
+		}
+		fast = fast.Next
+		if flag&1 == 1 {
+			slow = slow.Next
+			if fast == slow {
+				break
+			}
+		}
+		flag += 1
+	}
+	for p != slow {
+		p = p.Next
+		slow = slow.Next
+	}
+	return slow
+}
+
+//141. 环形链表
+//我自己的解答
+func hasCycle(head *ListNode) bool {
+	flag := 0
+	fast, slow := head, head
+	for fast != nil {
+		fast = fast.Next
+		if flag&1 == 1 {
+			slow = slow.Next
+			if fast == slow {
+				return true
+			}
+		}
+		flag ^= 1
+	}
+	return false
+}
+
+//官方解答
+//这里 fast 的初始位置是 head.Next 是因为如果初始值为 head 会导致 for 循环条件不成立而无法执行
+//兔子起点比乌龟高，且速度被乌龟要快。如果不存在环，那么兔子肯定会一直在乌龟前面
+//如果存在环，兔子会先于乌龟进入环内并绕圈，等乌龟进入环时，兔子由于速度快一定会在某个时刻与乌龟相遇，快了乌龟若干圈
+func hasCycleRegular(head *ListNode) bool {
+	if head == nil || head.Next == nil {
+		return false
+	}
+	fast, slow := head.Next, head
+	for fast != slow {
+		if fast == nil || fast.Next == nil {
+			return false
+		}
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	return true
+}
+
+func TestDetectCycle(t *testing.T) {
+	var three *ListNode
+	three = &ListNode{
+		Val: 2,
+		Next: &ListNode{
+			Val: 0,
+			Next: &ListNode{
+				Val:  -4,
+				Next: nil,
+			},
+		},
+	}
+	three.Next.Next.Next = three
+	head := &ListNode{
+		Val:  3,
+		Next: three,
+	}
+	result := detectCycleFastSlowPointer(head)
+	t.Log(result.Val)
+}
+
+//1022. 从根到叶的二进制数之和
+func sumRootToLeaf(root *TreeNode) int {
+	sum:= 0
+	var dfs func(node *TreeNode)int
+	dfs = func(node *TreeNode) int {
+		if root ==nil{
+			return
+		}
+		dfs()
+	}
+}
