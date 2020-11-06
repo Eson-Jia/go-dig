@@ -396,3 +396,242 @@ func TestOdd(t *testing.T) {
 	root.Right.Right.Right = &TreeNode{Val: 2}
 	t.Log(isEvenOddTree(root))
 }
+
+//4. 寻找两个正序数组的中位数
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	return 0
+}
+
+//89. 格雷编码
+//官方提示使用回溯算法
+//需要注意的是，两个连续的数值仅有一个位数的差异，例如：000 和 011 是不合法的，而且必须以 0 开头，即开头必须是 0
+//
+func grayCode(n int) []int {
+	buff := []int{0}
+	for i := 1; i <= n; i++ {
+		length := len(buff)
+		for j := length - 1; j >= 0; j-- {
+			v := buff[j] | (1 << (i - 1))
+			buff = append(buff, v)
+		}
+	}
+	return buff
+}
+
+func TestGrayCode(t *testing.T) {
+	t.Log(grayCode(2))
+}
+
+func pow(n int) int {
+	if n == 0 {
+		return 1
+	}
+	if n == 1 {
+		return 2
+	}
+	if n%2 == 1 {
+		return pow(n/2) * pow(n/2) * 2
+	} else {
+		return pow(n/2) * pow(n/2)
+	}
+}
+
+//54. 螺旋矩阵
+func spiralOrder(matrix [][]int) []int {
+	return nil
+}
+
+//7. 整数反转
+func reverse(x int) int {
+	return 0
+}
+
+func TestBitPrint(t *testing.T) {
+	t.Logf("%b", -2147483648)
+	fmt.Printf("%b", -2147483648)
+}
+
+//23. 合并K个升序链表
+//第一个思路是使用索引优先队列进行归并排序
+//因为指针的特性，索引优先队列不是必须的，优先队列就可以满足需求了
+//现在需要先实现优先队列
+//优先队列使用的数据结构是堆，这里我们使用的是最小堆，堆的结构原理是完全二叉树
+//如何初始化原始堆： 1.使用一个数组初始化; 2.连续使用 insert
+//现在尝试使用连续 insert
+type Dump struct {
+	FirstPoints []*ListNode
+	size        int
+}
+
+func New(maxSize int) *Dump {
+	dump := &Dump{
+		FirstPoints: make([]*ListNode, maxSize+1),
+		size:        0,
+	}
+	return dump
+}
+
+func (d *Dump) less(i, j int) bool {
+	return d.FirstPoints[i].Val < d.FirstPoints[j].Val
+}
+
+func (d *Dump) exchange(i, j int) {
+	d.FirstPoints[i], d.FirstPoints[j] = d.FirstPoints[j], d.FirstPoints[i]
+}
+
+func (d *Dump) swim(k int) {
+	for k >= 2 && d.less(k, k/2) {
+		d.exchange(k, k/2)
+		k /= 2
+	}
+}
+
+func (d *Dump) sink(k int) {
+	for k*2 <= d.size {
+		min := k * 2
+		if k*2+1 <= d.size && d.less(k*2+1, k*2) {
+			min = k*2 + 1
+		}
+		if d.less(min, k) {
+			d.exchange(min, k)
+			k = min
+		} else {
+			break
+		}
+	}
+	//fmt.Print("sink d:")
+	//for i := 1; i <= d.size; i++ {
+	//	fmt.Printf(" %d", d.FirstPoints[i].Val)
+	//}
+	//fmt.Print("\n")
+}
+
+func (d *Dump) Pop() *ListNode {
+	min := d.FirstPoints[1]
+	d.FirstPoints[1] = d.FirstPoints[d.size]
+	d.size--
+	d.sink(1)
+	return min
+}
+
+func (d *Dump) Size() int {
+	return d.size
+}
+
+//Insert 将数据放入数组尾部，并
+func (d *Dump) Insert(node *ListNode) {
+	d.size += 1
+	d.FirstPoints[d.size] = node
+	d.swim(d.size)
+	//fmt.Print("swim d:")
+	//for i := 1; i <= d.size; i++ {
+	//	fmt.Printf(" %d", d.FirstPoints[i].Val)
+	//}
+	//fmt.Print("\n")
+}
+
+func mergeKLists(lists []*ListNode) *ListNode {
+	var newListHead, newListTail *ListNode
+	minDump := New(len(lists))
+	for _, list := range lists {
+		if list != nil {
+			minDump.Insert(list)
+		}
+	}
+	for minDump.Size() > 0 {
+		min := minDump.Pop()
+		if min.Next != nil {
+			minDump.Insert(min.Next)
+		}
+		if newListHead == nil {
+			newListHead = min
+			newListTail = min
+		} else {
+			newListTail.Next = min
+			newListTail = min
+		}
+	}
+	if newListTail != nil {
+		newListTail.Next = nil
+	}
+	return newListHead
+}
+
+func TestMergeKLists(t *testing.T) {
+	theLists := []*ListNode{
+		//constructorList([]int{-8, -7, -7, -5, 1, 1, 3, 4}),
+		//constructorList([]int{-2}),
+		//constructorList([]int{-10, -10, -7, 0, 1, 3}),
+		//constructorList([]int{2}),
+	}
+	result := mergeKLists(theLists)
+
+	for result != nil {
+		t.Log(result.Val)
+		result = result.Next
+	}
+}
+
+//977. 有序数组的平方
+func sortedSquares(A []int) []int {
+	//index, v := 0, 0
+	//for index, v = range A {
+	//	if v > 0 {
+	//		break
+	//	}
+	//}
+	//for i := 0; i < len(A)-1; i++ {
+	//	A[i] = A[i] * A[i]
+	//}
+	//newArray := make([]int, len(A))
+	//
+	//i, j, count := index-1, index, 0; i >= 0 || j < len(A)
+	return nil
+}
+
+//236. 二叉树的最近公共祖先
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	pStack, qStack := prefixOrder(root, p), prefixOrder(root, q)
+	pLength, qLength := len(pStack), len(qStack)
+	var ret *TreeNode
+	for pIndex, qIndex := pLength-1, qLength-1; pIndex >= 0 && qIndex >= 0 && pStack[pIndex] == qStack[qIndex]; {
+		ret = pStack[pIndex]
+		pIndex -= 1
+		qIndex += 1
+	}
+	return ret
+}
+
+func prefixOrder(root, p *TreeNode) []*TreeNode {
+	if root == nil {
+		return nil
+	}
+	if root == p {
+		return []*TreeNode{root}
+	}
+	if stack := prefixOrder(root.Left, p); stack != nil {
+		return append(stack, root)
+	}
+	if stack := prefixOrder(root.Right, p); stack != nil {
+		return append(stack, root)
+	}
+	return nil
+}
+
+// 官方递归
+func lowestCommonAncestorRegular(root, p, q *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	left, right := lowestCommonAncestorRegular(root.Left, p, q), lowestCommonAncestorRegular(root.Right, p, q)
+	if left != nil && right != nil {
+		return root
+	}
+	if root == p || root == q {
+		return root
+	}
+	if left == nil {
+		return right
+	}
+	return left
+}
