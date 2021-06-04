@@ -140,3 +140,39 @@ func findNumberIn2DArrayFromLeftButton(matrix [][]int, target int) bool {
 	}
 	return false
 }
+
+/**
+剑指 Offer 05. 替换空格
+https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/
+Date:6/3
+*/
+
+func replaceSpace(s string) string {
+	space := 0
+	for _, i2 := range []byte(s) {
+		if i2 == ' ' {
+			space++
+		}
+	}
+	dest := make([]byte, len(s)+2*(space))
+	for i, b := range []byte(s) {
+		dest[i] = b
+	}
+	originIndex := len(s) - 1
+	destIndex := len(dest) - 1
+	for originIndex >= 0 {
+		if dest[originIndex] == ' ' {
+			dest[destIndex] = '0'
+			destIndex--
+			dest[destIndex] = '2'
+			destIndex--
+			dest[destIndex] = '%'
+			destIndex--
+		} else {
+			dest[destIndex] = dest[originIndex]
+			destIndex--
+		}
+		originIndex--
+	}
+	return string(dest)
+}
