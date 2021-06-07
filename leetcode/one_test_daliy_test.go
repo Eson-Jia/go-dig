@@ -176,3 +176,16 @@ func replaceSpace(s string) string {
 	}
 	return string(dest)
 }
+
+/**
+https://leetcode-cn.com/problems/target-sum/
+Date: 6/7
+思路: 动态规划用来寻找最优解,但是本例中只是用来遍历所有解法,所以应该不用动态规划.
+因为不断尝试在原来结果基础上加上或者减去某个数,所以我觉得需要使用回溯算法.
+在寻找答案的过程中,我们不断在原来的基础上做选择(- or +),并且在最后的结果不符合要求的时候,
+回溯到上一个选项并从新选择另一个选项.
+16:43 需要遍历 2 ** len(nums)种选项
+*/
+func findTargetSumWays(nums []int, target int) int {
+	return 0
+}
