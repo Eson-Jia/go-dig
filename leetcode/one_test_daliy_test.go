@@ -1,5 +1,9 @@
 package dance
 
+import (
+	"testing"
+)
+
 //每日一题
 
 /**
@@ -185,7 +189,31 @@ Date: 6/7
 在寻找答案的过程中,我们不断在原来的基础上做选择(- or +),并且在最后的结果不符合要求的时候,
 回溯到上一个选项并从新选择另一个选项.
 16:43 需要遍历 2 ** len(nums)种选项
+17:01 突然有个想法,使用 一个数 0 <= i < 2 ** len(nums),每次 +1 递增,然后每一个数组下标与其与,结果是 1 就加上,0 就减去
+18:20 能得到正确结果,但是运行时间太长了.总结一下是因为遍历的方式不像回溯法那样回退到之前步骤的结果.
+例如,1+1+1+1 最后一步是 +1 或者 -1,回溯法就可以使用之前结果直接执行 4+1 或者 4-1 .但是遍历法需要从头开始计算,当数组越长,回溯法的优势越明显.
 */
 func findTargetSumWays(nums []int, target int) int {
-	return 0
+	theLen := len(nums)
+	ope := []int{-1, 1}
+	count := 0
+	for i := 0; i < 1<<theLen; i++ {
+		sum := 0
+		for j := 0; j < theLen; j++ {
+			sum += ope[(i&(1<<j))>>j] * nums[j]
+		}
+		if sum == target {
+			count++
+		}
+	}
+	return count
+}
+
+func TestFindTargetSumWays(t *testing.T) {
+	if result := findTargetSumWays([]int{1, 1, 1, 1, 1}, 3); result == 5 {
+		t.Log("good")
+	} else {
+		t.Errorf("error want:%d got:%d", 3, result)
+	}
+
 }
