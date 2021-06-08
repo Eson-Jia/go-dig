@@ -234,13 +234,13 @@ func TestDetectCycle(t *testing.T) {
 }
 
 //1022. 从根到叶的二进制数之和
-func sumRootToLeaf(root *TreeNode) int {
-	sum:= 0
-	var dfs func(node *TreeNode)int
-	dfs = func(node *TreeNode) int {
-		if root ==nil{
-			return
-		}
-		dfs()
-	}
-}
+//func sumRootToLeaf(root *TreeNode) int {
+//	sum:= 0
+//	var dfs func(node *TreeNode)int
+//	dfs = func(node *TreeNode) int {
+//		if root ==nil{
+//			return
+//		}
+//		dfs()
+//	}
+//}
