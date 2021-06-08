@@ -192,6 +192,8 @@ Date: 6/7
 17:01 突然有个想法,使用 一个数 0 <= i < 2 ** len(nums),每次 +1 递增,然后每一个数组下标与其与,结果是 1 就加上,0 就减去
 18:20 能得到正确结果,但是运行时间太长了.总结一下是因为遍历的方式不像回溯法那样回退到之前步骤的结果.
 例如,1+1+1+1 最后一步是 +1 或者 -1,回溯法就可以使用之前结果直接执行 4+1 或者 4-1 .但是遍历法需要从头开始计算,当数组越长,回溯法的优势越明显.
+6/8
+9:47 使用回溯算法,利用调用栈实现中间结果的存储
 */
 func findTargetSumWays(nums []int, target int) int {
 	theLen := len(nums)
@@ -209,8 +211,35 @@ func findTargetSumWays(nums []int, target int) int {
 	return count
 }
 
+/**
+6/8 10:41 使用我以为的回溯算法,虽然所有的测试用例都跑过了(138),但最终还是超过运行时间,暂时还没想起来更好的方法
+*/
+func findTargetSumWaysWithBack(nums []int, target int) int {
+	operators := []int{-1, 1}
+	count := 0
+	for _, nextOperator := range operators {
+		count += calculateCurrent(nums, 0, operators, nextOperator, 0, target)
+	}
+	return count
+}
+
+func calculateCurrent(nums []int, numsIndex int, operators []int, operator int, previousSum int, target int) int {
+	sum := previousSum + operator*nums[numsIndex]
+	if numsIndex == len(nums)-1 {
+		if target == sum {
+			return 1
+		}
+		return 0
+	}
+	count := 0
+	for _, nextOperator := range operators {
+		count += calculateCurrent(nums, numsIndex+1, operators, nextOperator, sum, target)
+	}
+	return count
+}
+
 func TestFindTargetSumWays(t *testing.T) {
-	if result := findTargetSumWays([]int{1, 1, 1, 1, 1}, 3); result == 5 {
+	if result := findTargetSumWaysWithBack([]int{1, 1, 1, 1, 1}, 3); result == 5 {
 		t.Log("good")
 	} else {
 		t.Errorf("error want:%d got:%d", 3, result)
