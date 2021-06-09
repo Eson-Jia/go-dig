@@ -1,6 +1,7 @@
 package dance
 
 import (
+	"sort"
 	"testing"
 )
 
@@ -245,4 +246,29 @@ func TestFindTargetSumWays(t *testing.T) {
 		t.Errorf("error want:%d got:%d", 3, result)
 	}
 
+}
+
+/**
+1046. 最后一块石头的重量
+https://leetcode-cn.com/problems/last-stone-weight/
+6/8 10:46
+可以通过优先队列来实现,但是 golang 没有优先队列,只能每次修改完元素之后,重新排序
+6/9 17:32 通过
+
+*/
+
+func lastStoneWeight(stones []int) int {
+	for len(stones) >= 2 {
+		sort.Ints(stones)
+		if y, x := stones[len(stones)-1], stones[len(stones)-2]; x == y {
+			stones = stones[:len(stones)-2]
+		} else {
+			stones = stones[:len(stones)-2]
+			stones = append(stones, y-x)
+		}
+	}
+	if len(stones) == 1 {
+		return stones[0]
+	}
+	return 0
 }
