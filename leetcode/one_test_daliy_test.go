@@ -203,7 +203,11 @@ func findTargetSumWays(nums []int, target int) int {
 	for i := 0; i < 1<<theLen; i++ {
 		sum := 0
 		for j := 0; j < theLen; j++ {
+			sum += ope[(i>>j)&1] * nums[j]
+			/**
+			6/10 今天再次看代码的时候发现,可以将位操作优化到上面这个,更简单,更容易理解
 			sum += ope[(i&(1<<j))>>j] * nums[j]
+			*/
 		}
 		if sum == target {
 			count++
