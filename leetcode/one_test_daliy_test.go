@@ -254,7 +254,6 @@ https://leetcode-cn.com/problems/last-stone-weight/
 6/8 10:46
 可以通过优先队列来实现,但是 golang 没有优先队列,只能每次修改完元素之后,重新排序
 6/9 17:32 通过
-
 */
 
 func lastStoneWeight(stones []int) int {
@@ -271,4 +270,40 @@ func lastStoneWeight(stones []int) int {
 		return stones[0]
 	}
 	return 0
+}
+
+/**
+204. 计数质数
+https://leetcode-cn.com/problems/count-primes/
+Date: 6/10
+埃拉托斯特尼筛法: 要得到自然数 n 以内的全部素数,必须把不大于根号 n 的所有素数的倍数剔除,剩下的就是素数.
+*/
+
+func countPrimes(n int) int {
+	if n <= 2 {
+		return 0
+	}
+	flags := make([]bool, n+1)
+	sqrtN := 0
+	for i := 0; i < n; i++ {
+		if i*i > n {
+			sqrtN = i
+			break
+		}
+	}
+	for i := 2; i <= sqrtN; i++ {
+		if flags[i] == true {
+			continue
+		}
+		for j := 2 * i; j < n; j += i {
+			flags[j] = true
+		}
+	}
+	count := 0
+	for i := 2; i < n; i++ {
+		if flags[i] == false {
+			count++
+		}
+	}
+	return count
 }
