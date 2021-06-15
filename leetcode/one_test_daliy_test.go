@@ -311,3 +311,39 @@ func countPrimes(n int) int {
 	}
 	return count
 }
+
+/**
+6/10
+快速排序
+*/
+
+func quickSort(nums []int) {
+}
+
+/**
+剑指 Offer 15. 二进制中1的个数
+https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/
+Date: 6/15
+*/
+
+func hammingWeight(num uint32) int {
+	count := 0
+	for {
+		if num <= 0 {
+			break
+		}
+		count++
+		num &= num - 1
+	}
+	return count
+}
+
+func hammingWeightBasic(num uint32) int {
+	count := 0
+	for i := 0; i < 2<<5; i++ {
+		if num&(1<<i) > 0 {
+			count++
+		}
+	}
+	return count
+}
