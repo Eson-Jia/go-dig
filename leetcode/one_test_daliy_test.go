@@ -347,3 +347,14 @@ func hammingWeightBasic(num uint32) int {
 	}
 	return count
 }
+
+/**
+https://leetcode-cn.com/problems/binary-watch/
+2021/6/21
+回溯算法
+代表小时的和代表分钟的,小时的可能亮灯数为:0-4 一共五个可能每一种一种或有多种排列组合
+1. 第一步使用朴素的方式尝试解题
+*/
+func readBinaryWatch(turnedOn int) []string {
+	return nil
+}
