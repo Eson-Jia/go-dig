@@ -1,6 +1,7 @@
 package dance
 
 import (
+	"fmt"
 	"sort"
 	"testing"
 )
@@ -354,7 +355,38 @@ https://leetcode-cn.com/problems/binary-watch/
 回溯算法
 代表小时的和代表分钟的,小时的可能亮灯数为:0-4 一共五个可能每一种一种或有多种排列组合
 1. 第一步使用朴素的方式尝试解题
+6/23
+查看提示说,遍历所有时间可能的组合(12*60)然后在组合里面查找符合灯数的条目
+这不就是遍历吗,能用得到回溯算法吗?
+可以在某一组合小时的灯数超过总灯数直接不再遍历分钟,也算是一种回溯算法吧.
+潜意识里,使用遍历算法就会遍历所有值,对于输入参数的不同值使用遍历算法总觉得会浪费.
+这是不正确的,因为不同的输入参数,可以使遍历算法剪除不符合条件的分支,不会全部遍历.
+小时可能值为 0-11,分钟可能值为 0-59.
 */
 func readBinaryWatch(turnedOn int) []string {
-	return nil
+	result := make([]string, 0)
+	for i := 0; i < 12; i++ {
+		hourCount := getNums(i)
+		if hourCount > turnedOn {
+			continue
+		}
+		for j := 0; j < 60; j++ {
+			MinCount := getNums(j)
+			if hourCount+MinCount == turnedOn {
+				result = append(result, fmt.Sprintf("%d:%02d", i, j))
+			}
+		}
+	}
+	return result
+}
+
+// getNums
+// 只对正整数有效
+func getNums(num int) int {
+	count := 0
+	for num > 0 {
+		count += 1
+		num &= num - 1
+	}
+	return count
 }
