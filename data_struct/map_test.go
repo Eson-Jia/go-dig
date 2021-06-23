@@ -90,12 +90,12 @@ func TestRangeKey(t *testing.T) {
 		"e": 5,
 	}
 	buff := bytes.NewBuffer(nil)
-	for k, _ := range m {
+	for k := range m {
 		fmt.Fprint(buff, k, " ")
 	}
 	fmt.Println(buff.String())
 	buff.Reset()
-	for k, _ := range m {
+	for k := range m {
 		fmt.Fprint(buff, k, " ")
 	}
 	fmt.Println(buff.String())
@@ -114,7 +114,7 @@ func TestSorted(t *testing.T) {
 		"e": 5,
 	}
 	var keys []string
-	for k, _ := range m {
+	for k := range m {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

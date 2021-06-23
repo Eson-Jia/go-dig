@@ -27,10 +27,10 @@ func TestMaxSUmRangeQuery(t *testing.T) {
 		{
 			[]int{1, 2, 3, 4, 5},
 			[][]int{
-				[]int{
+				{
 					1, 3,
 				},
-				[]int{0, 1},
+				{0, 1},
 			},
 			19,
 		},

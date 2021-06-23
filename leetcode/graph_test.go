@@ -198,27 +198,27 @@ func TestGardenNoAdj(t *testing.T) {
 		{
 			3,
 			[][]int{
-				[]int{1, 2},
-				[]int{2, 3},
-				[]int{1, 3},
+				{1, 2},
+				{2, 3},
+				{1, 3},
 			},
 		},
 		{
 			4,
 			[][]int{
-				[]int{1, 2},
-				[]int{3, 4},
+				{1, 2},
+				{3, 4},
 			},
 		},
 		{
 			4,
 			[][]int{
-				[]int{1, 2},
-				[]int{2, 3},
-				[]int{3, 4},
-				[]int{4, 1},
-				[]int{1, 3},
-				[]int{2, 4},
+				{1, 2},
+				{2, 3},
+				{3, 4},
+				{4, 1},
+				{1, 3},
+				{2, 4},
 			},
 		},
 	}
@@ -409,8 +409,8 @@ func TestUnhappyFriends(t *testing.T) {
 		Pairs       [][]int
 	}{
 		4,
-		[][]int{[]int{1, 2, 3}, []int{3, 2, 0}, []int{3, 1, 0}, []int{1, 2, 0}},
-		[][]int{[]int{0, 1}, []int{2, 3}},
+		[][]int{{1, 2, 3}, {3, 2, 0}, {3, 1, 0}, {1, 2, 0}},
+		[][]int{{0, 1}, {2, 3}},
 	}
 	t.Log(unhappyFriends(suit.N, suit.Preferences, suit.Pairs))
 }

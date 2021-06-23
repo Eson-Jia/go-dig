@@ -61,7 +61,7 @@ func maximalNetworkRank(n int, roads [][]int) int {
 }
 
 func TestMaximalNetworkRank(t *testing.T) {
-	maximalNetworkRank(4, [][]int{[]int{0, 1}, []int{0, 3}, []int{1, 2}, []int{1, 3}})
+	maximalNetworkRank(4, [][]int{{0, 1}, {0, 3}, {1, 2}, {1, 3}})
 }
 
 //1616. 分割两个字符串得到回文串

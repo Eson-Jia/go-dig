@@ -139,8 +139,8 @@ func sortList(head *ListNode) *ListNode {
 
 func TestSortList(t *testing.T) {
 	suits := [][]int{
-		[]int{4, 2, 1, 3},
-		[]int{-1, 5, 3, 4, 0},
+		{4, 2, 1, 3},
+		{-1, 5, 3, 4, 0},
 	}
 	head := constructorList(suits[1])
 	sortedHead := sortList(head)

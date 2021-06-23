@@ -12,7 +12,7 @@ type IntSetBitVec struct {
 
 func NewIntSetBitVec(maxElements, maxVal int) *IntSetBitVec {
 	return &IntSetBitVec{
-		buff:   make([]int, (maxVal/BITSPERWORD + 1)),
+		buff:   make([]int, maxVal/BITSPERWORD+1),
 		maxVal: maxVal,
 	}
 }
@@ -24,7 +24,7 @@ func (i *IntSetBitVec) Insert(t int) {
 func (i *IntSetBitVec) insert(t int) {
 	if !i.test(t) {
 		i.size++
-		i.buff[t>>SHIFT] |= (1 << (t & MASK))
+		i.buff[t>>SHIFT] |= 1 << (t & MASK)
 	}
 }
 
