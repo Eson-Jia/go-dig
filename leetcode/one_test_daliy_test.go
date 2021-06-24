@@ -2,6 +2,7 @@ package dance
 
 import (
 	"fmt"
+	"math/bits"
 	"sort"
 	"testing"
 )
@@ -363,37 +364,28 @@ https://leetcode-cn.com/problems/binary-watch/
 这是不正确的,因为不同的输入参数,可以使遍历算法剪除不符合条件的分支,不会全部遍历.
 小时可能值为 0-11,分钟可能值为 0-59.
 
-6/23:11:25
+6/23 11:25
 暴露的问题是解题时脑子不会拐弯,不会逆向思维.当时的解题思路:
 将 turnedOn 个灯分配给小时和分钟.假如 小时有 h 个灯,那么 h 个灯总共有多少组合方式以及如何遍历(这个是计算整数 n 中有多少个 1 的逆运算,
 一个数中有 n 个 1,求这个数的所有可能值),而且还有不符合条件的,因为有的亮灯组合会超过 11,这样的结果要被剔除.
 分钟会有同样的情况,这些边界情况都会使代码复杂.
 但是换个方向,逻辑就很简单了:遍历所有可能的时间组合,计算组合亮灯数(计算整数 n 中有多少个 1)选出符合条件的时间组合.
+
+6/23  11:49
+使用 bits.OneCount 代替自己实现的计算数中的 二进制1
 */
 func readBinaryWatch(turnedOn int) []string {
 	result := make([]string, 0)
-	for i := 0; i < 12; i++ {
-		hourCount := getNums(i)
+	for i := uint8(0); i < 12; i++ {
+		hourCount := bits.OnesCount8(i)
 		if hourCount > turnedOn {
 			continue
 		}
-		for j := 0; j < 60; j++ {
-			MinCount := getNums(j)
-			if hourCount+MinCount == turnedOn {
+		for j := uint8(0); j < 60; j++ {
+			if hourCount+bits.OnesCount8(j) == turnedOn {
 				result = append(result, fmt.Sprintf("%d:%02d", i, j))
 			}
 		}
 	}
 	return result
-}
-
-// getNums
-// 只对正整数有效
-func getNums(num int) int {
-	count := 0
-	for num > 0 {
-		count += 1
-		num &= num - 1
-	}
-	return count
 }
