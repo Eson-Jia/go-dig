@@ -373,6 +373,10 @@ https://leetcode-cn.com/problems/binary-watch/
 
 6/23  11:49
 使用 bits.OneCount 代替自己实现的计算数中的 二进制1
+
+6/25 11:02
+另一个思路就是遍历 10 个灯开合的所有组合(共有 1<<10 种),i 从 0 到 1<<10,其中 i 的 前四位代表小时,后六位代表分钟,
+把不符合亮灯数和时间不合法的的组合过滤掉即可得到最终结果.该解法参考 readBinaryWatchSecond
 */
 func readBinaryWatch(turnedOn int) []string {
 	result := make([]string, 0)
@@ -386,6 +390,21 @@ func readBinaryWatch(turnedOn int) []string {
 				result = append(result, fmt.Sprintf("%d:%02d", i, j))
 			}
 		}
+	}
+	return result
+}
+
+func readBinaryWatchSecond(turnedOn int) []string {
+	result := make([]string, 0)
+	for i := uint32(0); i < (1 << 10); i++ {
+		hour, minute := i>>6, i&0b111111
+		if turnedOn != bits.OnesCount32(i) {
+			continue
+		}
+		if hour >= 12 || minute >= 60 {
+			continue
+		}
+		result = append(result, fmt.Sprintf("%d:%02d", hour, minute))
 	}
 	return result
 }
