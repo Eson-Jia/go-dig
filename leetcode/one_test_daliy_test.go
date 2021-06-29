@@ -197,6 +197,9 @@ Date: 6/7
 例如,1+1+1+1 最后一步是 +1 或者 -1,回溯法就可以使用之前结果直接执行 4+1 或者 4-1 .但是遍历法需要从头开始计算,当数组越长,回溯法的优势越明显.
 6/8
 9:47 使用回溯算法,利用调用栈实现中间结果的存储
+
+6/8 10:41
+使用我以为的回溯算法 findTargetSumWaysRecursive ,虽然所有的测试用例都跑过了(138),但最终还是超过运行时间,暂时还没想起来更好的方法
 */
 func findTargetSumWays(nums []int, target int) int {
 	theLen := len(nums)
@@ -218,10 +221,7 @@ func findTargetSumWays(nums []int, target int) int {
 	return count
 }
 
-/**
-6/8 10:41 使用我以为的回溯算法,虽然所有的测试用例都跑过了(138),但最终还是超过运行时间,暂时还没想起来更好的方法
-*/
-func findTargetSumWaysWithBack(nums []int, target int) int {
+func findTargetSumWaysRecursive(nums []int, target int) int {
 	operators := []int{-1, 1}
 	count := 0
 	for _, nextOperator := range operators {
@@ -246,7 +246,7 @@ func calculateCurrent(nums []int, numsIndex int, operators []int, operator int, 
 }
 
 func TestFindTargetSumWays(t *testing.T) {
-	if result := findTargetSumWaysWithBack([]int{1, 1, 1, 1, 1}, 3); result == 5 {
+	if result := findTargetSumWaysRecursive([]int{1, 1, 1, 1, 1}, 3); result == 5 {
 		t.Log("good")
 	} else {
 		t.Errorf("error want:%d got:%d", 3, result)
