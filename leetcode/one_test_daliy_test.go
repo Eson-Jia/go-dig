@@ -200,6 +200,8 @@ Date: 6/7
 
 6/8 10:41
 使用我以为的回溯算法 findTargetSumWaysRecursive ,虽然所有的测试用例都跑过了(138),但最终还是超过运行时间,暂时还没想起来更好的方法
+
+6/29 15:30 优化了回溯算法(也就是递归遍历法) findTargetSumWaysRecursive,精简了代码实现.现在可以跑过测试
 */
 func findTargetSumWays(nums []int, target int) int {
 	theLen := len(nums)
@@ -222,27 +224,18 @@ func findTargetSumWays(nums []int, target int) int {
 }
 
 func findTargetSumWaysRecursive(nums []int, target int) int {
-	operators := []int{-1, 1}
-	count := 0
-	for _, nextOperator := range operators {
-		count += calculateCurrent(nums, 0, operators, nextOperator, 0, target)
-	}
-	return count
+	return calculateCurrent(nums, 0, 1, 0, target) + calculateCurrent(nums, 0, -1, 0, target)
 }
 
-func calculateCurrent(nums []int, numsIndex int, operators []int, operator int, previousSum int, target int) int {
-	sum := previousSum + operator*nums[numsIndex]
+func calculateCurrent(nums []int, numsIndex, ope int, previousSum int, target int) int {
+	sum := previousSum + ope*nums[numsIndex]
 	if numsIndex == len(nums)-1 {
 		if target == sum {
 			return 1
 		}
 		return 0
 	}
-	count := 0
-	for _, nextOperator := range operators {
-		count += calculateCurrent(nums, numsIndex+1, operators, nextOperator, sum, target)
-	}
-	return count
+	return calculateCurrent(nums, numsIndex+1, 1, sum, target) + calculateCurrent(nums, numsIndex+1, -1, sum, target)
 }
 
 func TestFindTargetSumWays(t *testing.T) {
