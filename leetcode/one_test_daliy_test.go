@@ -411,3 +411,60 @@ func readBinaryWatchSecond(turnedOn int) []string {
 	}
 	return result
 }
+
+/**
+https://leetcode-cn.com/problems/sum-of-all-subset-xor-totals/
+6/28
+9:56
+寻找数组 array 中元素的子集的遍历,就涉及到排列组合,这时,遍历从 0 到 1>>len(array)
+之间的每一个数 i,i 的二级制格式中的 j 是 0/1,代表着 i 当前子集是否包含 array[j] 元素
+6/29 10:29
+看了官方解题,一共有三种解法,这个是第二个解法叫:迭代法枚举子集
+现在来试试第一种解法:递归枚举子集法 subsetXORSumRecursive
+*/
+
+func subsetXORSum(nums []int) int {
+	length := len(nums)
+	sum := 0
+	for i := 0; i < 1<<length; i++ {
+		result := 0
+		for j := 0; j < length; j++ {
+			if (1<<j)&i > 0 {
+				result ^= nums[j]
+			}
+		}
+		sum += result
+	}
+	return sum
+}
+
+func subsetXORSumRecursive(nums []int) int {
+	result := new(int)
+	subsetXORSumR(nums, 0, true, 0, result)
+	subsetXORSumR(nums, 0, false, 0, result)
+	return *result
+}
+
+func subsetXORSumR(nums []int, index int, include bool, xorResult int, sums *int) {
+	if len(nums)-1 >= index {
+		if include {
+			xorResult ^= nums[index]
+		}
+	}
+	if len(nums)-1 == index {
+		*sums += xorResult
+		return
+	}
+	subsetXORSumR(nums, index+1, true, xorResult, sums)
+	subsetXORSumR(nums, index+1, false, xorResult, sums)
+}
+
+func TestXOR(t *testing.T) {
+	t.Logf("%d", 5^5)
+}
+
+func TestSubsetXORSum(t *testing.T) {
+	input := []int{1, 3}
+	result := subsetXORSum(input)
+	t.Log(result)
+}
