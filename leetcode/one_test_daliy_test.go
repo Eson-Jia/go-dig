@@ -233,6 +233,10 @@ dp[i][j]的值由两部分构成:
 2. 选择最后一个物品(nums[i])时的前 i-1 个物品质量为 j-nums[i] 的组合个数: dp[i-1][j - nums[i]]
 dp[0][0] = 1
 dp[0][>0] = 0
+
+7/9 10:02
+官方解题提示算法还可以进一步优化,因为 dp[i][j] 只会依赖 dp[i-1][<=j]的数据,所以我们可以滚动地使用一行数据而非 len(nums) 行
+findTargetSumWaysDPOptimal 一直无法得到正确的结果
 */
 func findTargetSumWays(nums []int, target int) int {
 	theLen := len(nums)
@@ -296,8 +300,31 @@ func findTargetSumWaysDP(nums []int, target int) int {
 	return dp[length][(sums-target)/2]
 }
 
+func findTargetSumWaysDPOptimal(nums []int, target int) int {
+	sum := 0
+	for _, num := range nums {
+		sum += num
+	}
+	negative := 0
+	if negative = sum - target; negative < 0 || negative%2 == 1 {
+		return 0
+	}
+	negative /= 2
+	dp := make([]int, negative+1)
+	dp[0] = 1
+	for i := 1; i <= len(nums); i++ {
+		current := nums[i-1]
+		for j := 0; j <= negative; j++ {
+			if current <= j {
+				dp[j] += dp[j-current]
+			}
+		}
+	}
+	return dp[negative]
+}
+
 func TestFindTargetSumWays(t *testing.T) {
-	if result := findTargetSumWaysDP([]int{1, 2, 1}, 0); result == 5 {
+	if result := findTargetSumWaysDPOptimal([]int{1, 2, 1}, 0); result == 5 {
 		t.Log("good")
 	} else {
 		t.Errorf("error want:%d got:%d", 3, result)
