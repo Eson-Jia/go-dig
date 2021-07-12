@@ -237,6 +237,10 @@ dp[0][>0] = 0
 7/9 10:02
 官方解题提示算法还可以进一步优化,因为 dp[i][j] 只会依赖 dp[i-1][<=j]的数据,所以我们可以滚动地使用一行数据而非 len(nums) 行
 findTargetSumWaysDPOptimal 一直无法得到正确的结果
+
+7/12 11:04
+明白为什么无法得到正确的结果了,为了节省内存采用了一行数据滚动使用, dp[i][j] 依赖 dp[i-1][k](k<j)的结果,但是如果从 0 到 negative 的方向
+遍历的话,dp[i-1][k] 的值会被 dp[i][k]覆盖掉,导致 dp[i][j] 的值不正确.所有我们应该采取从 negative 到 0遍历的方式
 */
 func findTargetSumWays(nums []int, target int) int {
 	theLen := len(nums)
@@ -314,7 +318,7 @@ func findTargetSumWaysDPOptimal(nums []int, target int) int {
 	dp[0] = 1
 	for i := 1; i <= len(nums); i++ {
 		current := nums[i-1]
-		for j := 0; j <= negative; j++ {
+		for j := negative; j >= 0; j-- {
 			if current <= j {
 				dp[j] += dp[j-current]
 			}
