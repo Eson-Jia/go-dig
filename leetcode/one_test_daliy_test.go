@@ -202,6 +202,37 @@ Date: 6/7
 使用我以为的回溯算法 findTargetSumWaysRecursive ,虽然所有的测试用例都跑过了(138),但最终还是超过运行时间,暂时还没想起来更好的方法
 
 6/29 15:30 优化了回溯算法(也就是递归遍历法) findTargetSumWaysRecursive,精简了代码实现.现在可以跑过测试
+
+7/2 9:57
+看了官方解题,可以使用动态规划来解题
+dp 有两个要素: 1.有限问题域 2. 最优子结构
+很明显枚举是有限问题域,现在来看最优子结构,额,怎么算最优呢?正好等于 target,然后可以寻找子结构 target = (+/-)第一元素 + 其他元素的组合
+如果我们选定第一个元素的符号为(+) 那么子结构就是 = (target - 第一元素) = (2...n)元素组合,但是现在有问题就是,一共有 1>>n 个选择,而不是 n 个
+选择,其实最终也是遍历枚举了(1>>n)
+
+7/2 10:38
+看了官方 dp 解法的提示,使用了一个值 sums 即所有元素的和.然后就有灵感了,因为所有元素都为正整数,我们可以对这些元素求和,然后在一个个减去,直到最终结果为 target.
+
+7/6 10:05
+使用 numbs 的所有和 sums 依次减去元素的方式到这就没有思路了.
+查看官方解题,思路如下:因为每个元素都是正整数, target = positive - negative = (positive + negative) - 2*negative
+= sums - 2*negative; 2 * negative = sums -target; neg = (sums - target)/2;
+那么问题就可以转化为:在 nums 中找到所有和为 neg 的所有组合.
+这个问题就可以转化为背包问题了:有若干个物品重量在数组 nums 中,一个容量为 neg 的背包,求恰好能装满背包的所有组合方式.
+利用动态规划来解背包问题
+dp[i][j] 表示前 i 个数 和为 j 的个数有多少个
+
+7/7 15:25  根据官方提示实现了 findTargetSumWaysDP
+使用动态规划来解背包问题
+
+dp[i][j] 表示在前 i 个物品中,组合后质量为 j 的组合方式有多少个
+状态转移方程:
+
+dp[i][j]的值由两部分构成:
+1. 当不选择最后一个物品时的组合个数: dp[i-1][j]
+2. 选择最后一个物品(nums[i])时的前 i-1 个物品质量为 j-nums[i] 的组合个数: dp[i-1][j - nums[i]]
+dp[0][0] = 1
+dp[0][>0] = 0
 */
 func findTargetSumWays(nums []int, target int) int {
 	theLen := len(nums)
@@ -238,13 +269,39 @@ func calculateCurrent(nums []int, numsIndex, ope int, previousSum int, target in
 	return calculateCurrent(nums, numsIndex+1, 1, sum, target) + calculateCurrent(nums, numsIndex+1, -1, sum, target)
 }
 
+func findTargetSumWaysDP(nums []int, target int) int {
+	sums := 0
+	for _, num := range nums {
+		sums += num
+	}
+	result := 0
+	if result = sums - target; result < 0 || result%2 == 1 {
+		return 0
+	}
+	result /= 2
+	length := len(nums)
+	dp := make([][]int, length+1)
+	for i, _ := range dp {
+		dp[i] = make([]int, result+1)
+	}
+	dp[0][0] = 1
+	for i := 1; i <= length; i++ {
+		for j := 0; j <= result; j++ {
+			dp[i][j] = dp[i-1][j]
+			if temp := j + nums[i-1]; temp <= result {
+				dp[i][temp] += dp[i-1][j]
+			}
+		}
+	}
+	return dp[length][(sums-target)/2]
+}
+
 func TestFindTargetSumWays(t *testing.T) {
-	if result := findTargetSumWaysRecursive([]int{1, 1, 1, 1, 1}, 3); result == 5 {
+	if result := findTargetSumWaysDP([]int{1, 2, 1}, 0); result == 5 {
 		t.Log("good")
 	} else {
 		t.Errorf("error want:%d got:%d", 3, result)
 	}
-
 }
 
 /**
