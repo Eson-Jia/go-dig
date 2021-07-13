@@ -542,3 +542,20 @@ func subsetXORSumR(nums []int, index int, include bool, xorResult int, sums *int
 	subsetXORSumR(nums, index+1, true, xorResult, sums)
 	subsetXORSumR(nums, index+1, false, xorResult, sums)
 }
+
+/**
+https://leetcode-cn.com/problems/bracket-lcci/
+generateParenthesis
+2021/7/13 10:07
+自然想到 n 对括号的组合就是 n-1 对的括号组合再加上一对括号,那么如何将第 n 个括号加到原有的组合中呢
+或者使用回溯,或者使用枚举,先生成所有可能的组合,然后判断是否合法
+除了枚举法之外,需要注意的问题是如何在原有子序列的基础上生成合法的序列
+现在尝试使用回溯方法构建
+()
+()() (())
+()()() (()()) ()(()) (())() ((()))
+*/
+
+func generateParenthesis(n int) []string {
+	return nil
+}
