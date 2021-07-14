@@ -545,6 +545,7 @@ func subsetXORSumR(nums []int, index int, include bool, xorResult int, sums *int
 
 /**
 https://leetcode-cn.com/problems/bracket-lcci/
+https://leetcode-cn.com/problems/generate-parentheses/
 generateParenthesis
 2021/7/13 10:07
 自然想到 n 对括号的组合就是 n-1 对的括号组合再加上一对括号,那么如何将第 n 个括号加到原有的组合中呢
@@ -554,8 +555,23 @@ generateParenthesis
 ()
 ()() (())
 ()()() (()()) ()(()) (())() ((()))
+2021/7/14 10:30
+在看了 allPossibleFBT 问题的时候,突然发现该问题就是一个树(非二叉树)形状结构,这也是一种解题思路,那么问题就可以转化为 n 个节点组而成森林有多少种方式?
+*/
+func generateParenthesis(n int) []string {
+	return nil
+}
+
+/**
+https://leetcode-cn.com/problems/all-possible-full-binary-trees/
+2021/7/14 10:35
+现在有个疑问:奇数个肯定是可以构造成满二叉树,是否节点为偶数个无法形成满二叉树?
+先尝试使用朴素的方式解题:
+额,没想起来
+使用动态规划的话需要找到最优子结构,然后找到状态转移方程:
+
 */
 
-func generateParenthesis(n int) []string {
+func allPossibleFBT(n int) []*TreeNode {
 	return nil
 }
