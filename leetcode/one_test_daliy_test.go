@@ -584,3 +584,152 @@ allPossibleFBT generateParenthesis 都是树相关的
 func allPossibleFBT(n int) []*TreeNode {
 	return nil
 }
+
+/**
+https://leetcode-cn.com/study-plan/dynamic-programming/?progress=qm448d
+开启动态规划学习计划
+*/
+
+/**
+***Day 1 ***
+ */
+
+/**
+https://leetcode-cn.com/problems/fibonacci-number/
+
+使用一维动态规划即可解出 fibDP
+可以看出只是用了数组最后那两个,所有为了节省内存可以不使用数组改为滚动使用两个变量 fibDPOptimal
+*/
+func fibDP(n int) int {
+	dp := make([]int, n+1)
+	dp[0] = 0
+	dp[1] = 1
+	for i := 2; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2]
+	}
+	return dp[n]
+}
+
+func fibDPOptimal(n int) int {
+	if n == 0 {
+		return 0
+	} else if n == 1 {
+		return 1
+	}
+	first, second := 0, 1
+	for i := 2; i <= n; i++ {
+		second, first = second+first, second
+	}
+	return second
+}
+
+func TestFibDPOptimal(t *testing.T) {
+	t.Log(fibDPOptimal(8))
+}
+
+/**
+https://leetcode-cn.com/problems/n-th-tribonacci-number/
+*/
+func tribonacciDP(n int) int {
+	switch n {
+	case 0:
+		return 0
+	case 1:
+		return 1
+	case 2:
+		return 1
+	}
+	dp := make([]int, n+1)
+	dp[0] = 0
+	dp[1] = 1
+	dp[2] = 1
+	for i := 3; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2] + dp[i-3]
+	}
+	return dp[n]
+}
+
+func tribonacciDPOptimal(n int) int {
+	switch n {
+	case 0:
+		return 0
+	case 1:
+		return 1
+	case 2:
+		return 1
+	}
+	f, s, t := 0, 1, 1
+	for i := 3; i <= n; i++ {
+		t, s, f = t+s+f, t, s
+	}
+	return t
+}
+
+/**
+*** Day 2 ***
+ */
+
+/**
+https://leetcode-cn.com/problems/climbing-stairs/
+70. 爬楼梯
+状态转移方程 f(n) = f(n-1) + f(n-2)
+f(0)=1
+f(1)=1
+f(2)=2
+*/
+
+func climbStairs(n int) int {
+	switch n {
+	case 0:
+		return 0
+	case 1:
+		return 1
+	}
+	f, s := 1, 1
+	for i := 2; i <= n; i++ {
+		s, f = f+s, s
+	}
+	return s
+}
+
+/**
+https://leetcode-cn.com/problems/min-cost-climbing-stairs/
+最优子结构:到达顶层 n 的方式有两种,从 n-1 花费 cost[n-1],或者从 n-2 花费 cost[n-2].
+f(n) 为到达 n 层的最小花费
+状态转移方程:f(n) =min(f(n-1)+cost(n-1),f(n-2)+cost(n-2))
+f(0)
+
+一维数组解法 minCostClimbingStairs
+节省内存采取滚动使用两个变量的方法 minCostClimbingStairsMemoryOptimal
+因为都要到达楼层顶部,但是顶部 minCostClimbingStairsOptimal
+*/
+func minCostClimbingStairs(cost []int) int {
+	n := len(cost)
+	best := make([]int, n)
+	best[0] = cost[0]
+	best[1] = cost[1]
+	for i := 2; i < n; i++ {
+		best[i] = min(best[i-1], best[i-2]) + cost[i]
+	}
+	return min(best[n-1], best[n-2])
+}
+
+func minCostClimbingStairsMemoryOptimal(cost []int) int {
+	n := len(cost)
+	f, s := cost[0], cost[1]
+	for i := 2; i < n; i++ {
+		s, f = min(s, f)+cost[i], s
+	}
+	return min(s, f)
+}
+
+func minCostClimbingStairsOptimal(cost []int) int {
+	newCost := append(cost, 0)
+	n := len(newCost)
+	dp := make([]int, n)
+	dp[0], dp[1] = cost[0], cost[1]
+	for i := 2; i < n; i++ {
+		dp[i] = min(dp[i-1], dp[i-2]) + newCost[i]
+	}
+	return dp[n-1]
+}
