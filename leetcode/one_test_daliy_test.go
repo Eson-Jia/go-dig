@@ -733,3 +733,81 @@ func minCostClimbingStairsOptimal(cost []int) int {
 	}
 	return dp[n-1]
 }
+
+/**
+*** Day 3 ***
+ */
+
+/**
+https://leetcode-cn.com/problems/house-robber/
+f(n) = max(f(n-1),f(n-2)+nums[n])
+*/
+func rob(nums []int) int {
+	n := len(nums)
+	switch n {
+	case 1:
+		return nums[0]
+	case 2:
+		return max(nums[0], nums[1])
+	}
+	dp := make([]int, n)
+	dp[0], dp[1] = nums[0], max(nums[0], nums[1])
+	for i := 2; i < n; i++ {
+		dp[i] = max(dp[i-1], dp[i-2]+nums[i])
+	}
+	return dp[n-1]
+}
+
+/**
+https://leetcode-cn.com/problems/house-robber-ii/
+f(0,n)  = max(f(0,n-1),f(1,n-2)+nums[n])
+*/
+func rob2(nums []int) int {
+	if len(nums) == 1 {
+		return nums[0]
+	}
+	return 0
+}
+
+/**
+https://leetcode-cn.com/problems/delete-and-earn/
+1. 每次操作中，选择任意一个 nums[i]
+2. 删除之后必须删除所有等于 nums[i]-1/nums[i]+1 的元素。
+3. 根据标签提示感觉需要使用哈希表 map
+
+现在问题是：
+1. 如何求问题的子结构？
+2. 如何进行问题转化：求和吗？
+3. 如何删除所有等于 nums[i]-/+1的元素？将其重置为 0 吗？
+
+2021/7/19
+现有思路：
+1. 可以将数放入 map 中 key 是数 value 是出现次数，因为需要权衡该数与其左右邻居谁的和更大
+2. 从一个方向开始删除 ,所以将 key 排序,
+3. 该问题可以转化为一组数组里面有不同的值,数组是挨着的(0代表左右不挨着),如果删除一个值就需要把其左右的值清掉,求能达到的最大值.
+
+17:57
+呀,问题转化以后,不就成了打家劫舍的问题了吗?哈哈哈
+*/
+func deleteAndEarn(nums []int) int {
+	zip := make(map[int]int, 0)
+	for _, num := range nums {
+		zip[num]++
+	}
+	keys := make([]int, 0)
+	for k, _ := range zip {
+		keys = append(keys, k)
+	}
+	sort.Ints(keys)
+	final := make([]int, 0)
+	previous := 0
+	for _, key := range keys {
+		if previous != 0 && previous != key-1 {
+			final = append(final, 0)
+		}
+		final = append(final, zip[key]*key)
+		previous = key
+	}
+	// 然后这里就跟 rob的解题思路一样了
+	return rob(final)
+}
