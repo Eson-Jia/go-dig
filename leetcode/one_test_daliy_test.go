@@ -762,12 +762,19 @@ func rob(nums []int) int {
 /**
 https://leetcode-cn.com/problems/house-robber-ii/
 f(0,n)  = max(f(0,n-1),f(1,n-2)+nums[n])
+
+7/20 10:40
+根据上面的公式,可以看出该问题可以分解成求两个不同范围的打家劫舍
 */
 func rob2(nums []int) int {
-	if len(nums) == 1 {
+	n := len(nums)
+	switch n {
+	case 1:
 		return nums[0]
+	case 2:
+		return max(nums[0], nums[1])
 	}
-	return 0
+	return max(rob(nums[:n-1]), rob(nums[1:n-2])+nums[n-1])
 }
 
 /**
