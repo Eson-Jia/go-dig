@@ -745,17 +745,18 @@ f(n) = max(f(n-1),f(n-2)+nums[n])
 func rob(nums []int) int {
 	n := len(nums)
 	switch n {
+	case 0:
+		return 0
 	case 1:
 		return nums[0]
 	case 2:
 		return max(nums[0], nums[1])
 	}
-	dp := make([]int, n)
-	dp[0], dp[1] = nums[0], max(nums[0], nums[1])
+	first, second := nums[0], max(nums[0], nums[1])
 	for i := 2; i < n; i++ {
-		dp[i] = max(dp[i-1], dp[i-2]+nums[i])
+		second, first = max(second, first+nums[i]), second
 	}
-	return dp[n-1]
+	return second
 }
 
 /**
