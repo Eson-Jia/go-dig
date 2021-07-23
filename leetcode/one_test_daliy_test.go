@@ -819,3 +819,76 @@ func deleteAndEarn(nums []int) int {
 	// 然后这里就跟 rob的解题思路一样了
 	return rob(final)
 }
+
+/**
+*** Day 4 ***
+ */
+
+/**
+https://leetcode-cn.com/problems/jump-game/
+最后一个元素没有作用
+只能往前跳
+有向无环图
+二维数组
+深度优先遍历算法:遍历有向图,直到遇到最后一个节点
+深度优先遍历消耗太多的内存 canJumpDFS
+7/22 10:10 还是得需要使用动态规划
+假设 f(n) 为 n 数组的最远距离,那么 <n 的所有下标是否都可以到达?
+是的,可以用反证法证明所有下标都可以到达:假设有一点 0<x<n 无法到达
+f(n)表示在数组下标 <=n 的元素中,能到的最大的下标.
+状态转移方程:
+f(n) == n 说明在这里就断了,无法再前进 f(n+1) = f(n)
+f(n) > n 的话说明没有断,可以跳到下一个位置 n+1
+那么 f(n+1) = max(f(n),(n+1)+nums[n+1])
+*/
+func canJumpDFS(nums []int) bool {
+	length := len(nums)
+	if length == 1 {
+		return true
+	}
+	df := make([][]int, length)
+	for i := 0; i < length; i++ {
+		df[i] = make([]int, 0)
+	}
+	for i := 0; i < length; i++ {
+		for j := 1; j <= nums[i]; j++ {
+			df[i] = append(df[i], i+j)
+		}
+	}
+	var directedDFS func(int) bool
+	directedDFS = func(index int) bool {
+		for _, p := range df[index] {
+			if p == length-1 {
+				return true
+			}
+			if directedDFS(p) {
+				return true
+			}
+		}
+		return false
+	}
+	return directedDFS(0)
+}
+
+func canJumpDP(nums []int) bool {
+	length := len(nums)
+	if length == 1 {
+		return true
+	}
+	dp := make([]int, length)
+	dp[0] = nums[0]
+	for i := 0; i < length; i++ {
+		if dp[i-1] == i-1 {
+			return false
+		}
+		dp[i] = max(i+nums[i], dp[i-1])
+		if dp[i] >= length-1 {
+			return true
+		}
+	}
+	return false
+}
+
+func TestCanJump(t *testing.T) {
+	t.Log(canJumpDP([]int{1, 2}))
+}
