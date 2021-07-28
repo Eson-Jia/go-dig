@@ -832,7 +832,7 @@ https://leetcode-cn.com/problems/jump-game/
 二维数组
 深度优先遍历算法:遍历有向图,直到遇到最后一个节点
 深度优先遍历消耗太多的内存 canJumpDFS
-7/22 10:10 还是得需要使用动态规划
+7/22 10:10 还是得需要使用动态规划 canJumpDP
 假设 f(n) 为 n 数组的最远距离,那么 <n 的所有下标是否都可以到达?
 是的,可以用反证法证明所有下标都可以到达:假设有一点 0<x<n 无法到达
 f(n)表示在数组下标 <=n 的元素中,能到的最大的下标.
@@ -891,4 +891,34 @@ func canJumpDP(nums []int) bool {
 
 func TestCanJump(t *testing.T) {
 	t.Log(canJumpDP([]int{1, 2}))
+}
+
+/**
+https://leetcode-cn.com/problems/jump-game-ii/
+f(n) 表示跳到下标 n 所需的最小步数
+*/
+func jump(nums []int) int {
+	length := len(nums)
+	if length == 1 {
+		return 0
+	}
+	dp := make([]int, length)
+	for i := 1; i < length; i++ {
+		minJump := -1
+		for j := 0; j < i; j++ {
+			if nums[j]+j >= i {
+				if minJump == -1 {
+					minJump = dp[j]
+				} else {
+					minJump = min(minJump, dp[j])
+				}
+			}
+		}
+		dp[i] = minJump + 1
+	}
+	return dp[length-1]
+}
+
+func TestJump(t *testing.T) {
+	t.Log(jump([]int{2, 3, 1, 1, 4}))
 }
