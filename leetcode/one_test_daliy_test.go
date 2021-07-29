@@ -919,6 +919,9 @@ func jump(nums []int) int {
 	return dp[length-1]
 }
 
-func TestJump(t *testing.T) {
-	t.Log(jump([]int{2, 3, 1, 1, 4}))
+/**
+https://leetcode-cn.com/problems/maximum-subarray/
+*/
+func maxSubArray(nums []int) int {
+	return 0
 }
