@@ -937,8 +937,13 @@ https://leetcode-cn.com/problems/maximum-subarray/
 先求和, sums(n,m) = sums(m) - sums(n)  maxSubArrayFirstSum
 
 8/3 9:53
+无思路
 
-
+8/6
+15:51
+该题的进阶提示可以看出,可以实现复杂度为 O(n) 的解法,而且可以实现更为精妙的分治法.
+突然有个关于分治法的想法,将一个数组 A 在负值 N 处根据一分为二  A1 N A2 ,那么最大连续子数组,要么为 A1....?  呜呜呜,思路好像不对
+从开头开始遍历,有两个变量 maxSum 和 currentSum. currentSum 从第一个元素开始累加如果值为负值就重置为0,maxSum 则记录 currentSum 的最大值.
 */
 func maxSubArrayPoor(nums []int) int {
 	length := len(nums)
@@ -968,6 +973,19 @@ func maxSubArrayFirstSum(nums []int) int {
 		sums[i] = sum
 	}
 	return 0
+}
+
+func maxSubArray(nums []int) int {
+	length := len(nums)
+	maxSum, currentSum := nums[0], nums[0]
+	for i := 1; i < length; i++ {
+		if currentSum < 0 {
+			currentSum = 0
+		}
+		currentSum += nums[i]
+		maxSum = max(currentSum, maxSum)
+	}
+	return maxSum
 }
 
 func TestMaxSubArray(t *testing.T) {
