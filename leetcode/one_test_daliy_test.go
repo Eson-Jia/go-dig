@@ -920,8 +920,67 @@ func jump(nums []int) int {
 }
 
 /**
+*** Day 5 ***
+ */
+
+/**
 https://leetcode-cn.com/problems/maximum-subarray/
+7/29
+唉,没有思路.
+
+7/30 9:51
+依旧没有思路
+
+8/2 10:09
+先用朴素的解法,朴素的解法 时空复杂度都是 n**2 maxSubArrayPoor
+10:20
+先求和, sums(n,m) = sums(m) - sums(n)  maxSubArrayFirstSum
+
+8/3 9:53
+
+
 */
-func maxSubArray(nums []int) int {
+func maxSubArrayPoor(nums []int) int {
+	length := len(nums)
+	if length == 1 {
+		return nums[0]
+	}
+	dp := make([][]int, length)
+	maxArray := 0
+	for i := 0; i < length; i++ {
+		dp[i] = make([]int, length)
+		sum := 0
+		for j := i; j < length; j++ {
+			sum += nums[j]
+			dp[i][j] = sum
+			maxArray = max(sum, maxArray)
+		}
+	}
+	return maxArray
+}
+
+func maxSubArrayFirstSum(nums []int) int {
+	length := len(nums)
+	sums := make([]int, length)
+	sum := 0
+	for i := 0; i < length; i++ {
+		sum += nums[i]
+		sums[i] = sum
+	}
 	return 0
 }
+
+func TestMaxSubArray(t *testing.T) {
+	t.Log(maxSubArrayPoor([]int{-1, 1, -3, 4, -1, 2, 1, -5, 4}))
+}
+
+/**
+
+ */
+func maxSubarraySumCircular(nums []int) int {
+	return 0
+}
+
+/**
+*** Day 7 ***
+ */
