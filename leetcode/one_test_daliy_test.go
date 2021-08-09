@@ -934,7 +934,7 @@ https://leetcode-cn.com/problems/maximum-subarray/
 8/2 10:09
 先用朴素的解法,朴素的解法 时空复杂度都是 n**2 maxSubArrayPoor
 10:20
-先求和, sums(n,m) = sums(m) - sums(n)  maxSubArrayFirstSum
+先求和, sums(n,m) = sums(m) - sums(n)
 
 8/3 9:53
 无思路
@@ -943,7 +943,8 @@ https://leetcode-cn.com/problems/maximum-subarray/
 15:51
 该题的进阶提示可以看出,可以实现复杂度为 O(n) 的解法,而且可以实现更为精妙的分治法.
 突然有个关于分治法的想法,将一个数组 A 在负值 N 处根据一分为二  A1 N A2 ,那么最大连续子数组,要么为 A1....?  呜呜呜,思路好像不对
-从开头开始遍历,有两个变量 maxSum 和 currentSum. currentSum 从第一个元素开始累加如果值为负值就重置为0,maxSum 则记录 currentSum 的最大值.
+从开头开始遍历,有两个变量 maxSum 和 currentSum. currentSum 从第一个元素开始累加如果值为负值就重置为0,
+maxSum 则记录 currentSum 的最大值. maxSubArray.
 */
 func maxSubArrayPoor(nums []int) int {
 	length := len(nums)
@@ -964,17 +965,6 @@ func maxSubArrayPoor(nums []int) int {
 	return maxArray
 }
 
-func maxSubArrayFirstSum(nums []int) int {
-	length := len(nums)
-	sums := make([]int, length)
-	sum := 0
-	for i := 0; i < length; i++ {
-		sum += nums[i]
-		sums[i] = sum
-	}
-	return 0
-}
-
 func maxSubArray(nums []int) int {
 	length := len(nums)
 	maxSum, currentSum := nums[0], nums[0]
@@ -993,8 +983,8 @@ func TestMaxSubArray(t *testing.T) {
 }
 
 /**
-
- */
+https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
+*/
 func maxSubarraySumCircular(nums []int) int {
 	return 0
 }
