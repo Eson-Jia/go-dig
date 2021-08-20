@@ -66,7 +66,7 @@ func printNumAndAB() {
 func interleavePrint() {
 	var wg sync.WaitGroup
 	wg.Add(1)
-	numSingal := make(chan struct{})
+	numSignal := make(chan struct{})
 	alphaSignal := make(chan struct{})
 	wg.Add(1)
 	go func() {
@@ -78,7 +78,7 @@ func interleavePrint() {
 			i++
 			if i < 29 {
 				alphaSignal <- struct{}{}
-				<-numSingal
+				<-numSignal
 			} else {
 				break
 			}
@@ -93,7 +93,7 @@ func interleavePrint() {
 			a++
 			fmt.Printf("%c", a)
 			a++
-			numSingal <- struct{}{}
+			numSignal <- struct{}{}
 		}
 	}()
 	wg.Wait()
