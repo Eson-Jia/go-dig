@@ -1053,3 +1053,37 @@ https://leetcode-cn.com/problems/best-sightseeing-pair/
 func maxScoreSightseeingPair(values []int) int {
 	return 0
 }
+
+/**
+剑指 Offer 17. 打印从1到最大的n位数
+https://leetcode-cn.com/problems/da-yin-cong-1dao-zui-da-de-nwei-shu-lcof/
+*/
+func printNumbers(n int) []int {
+	return nil
+}
+
+/**
+415. 字符串相加
+https://leetcode-cn.com/problems/add-strings/
+按位运算
+*/
+
+//func add(previous bool, byte2 byte, byte3 byte) (current byte, next byte) {
+//	zero, nine := byte('0'), byte('9')
+//	dd := byte2 + byte3 - zero
+//	return 0, 0
+//}
+//
+//func addStrings(num1 string, num2 string) string {
+//	len1, len2 := len(num1), len(num2)
+//	if len1 > len2 {
+//		num1, num2 = num2, num1
+//		len1, len2 = len2, len1
+//	}
+//	bytes1, bytes2 := []byte(num1), []byte(num2)
+//	result := make([]byte, 0)
+//	for _, i2 := range bytes1 {
+//		String.to
+//	}
+//	return ""
+//}
