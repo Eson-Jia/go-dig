@@ -396,14 +396,6 @@ func countPrimes(n int) int {
 }
 
 /**
-6/10
-快速排序
-*/
-
-func quickSort(nums []int) {
-}
-
-/**
 剑指 Offer 15. 二进制中1的个数
 https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/
 Date: 6/15
@@ -945,6 +937,8 @@ https://leetcode-cn.com/problems/maximum-subarray/
 突然有个关于分治法的想法,将一个数组 A 在负值 N 处根据一分为二  A1 N A2 ,那么最大连续子数组,要么为 A1....?  呜呜呜,思路好像不对
 从开头开始遍历,有两个变量 maxSum 和 currentSum. currentSum 从第一个元素开始累加如果值为负值就重置为0,
 maxSum 则记录 currentSum 的最大值. maxSubArray.
+8/9 15:08
+现在尝试使用分治法求解，分治法的介绍：https://leetcode-cn.com/tag/divide-and-conquer/problemset/
 */
 func maxSubArrayPoor(nums []int) int {
 	length := len(nums)
@@ -984,11 +978,78 @@ func TestMaxSubArray(t *testing.T) {
 
 /**
 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
+918. 环形子数组的最大和
 */
 func maxSubarraySumCircular(nums []int) int {
 	return 0
 }
 
 /**
-*** Day 7 ***
+*** Day ６ ***
  */
+
+/**
+152. 乘积最大子数组
+https://leetcode-cn.com/problems/maximum-product-subarray/
+8/9
+16:25
+不能像最大子序和那样,因为一个很小的负数即可以让一个最大乘积变成最小的,也可以让最小乘积变成最大的.
+最大自序和中的负值要尽量舍弃.但是这里的负值不能简单的舍弃.
+很容易得出,数组的中如果有0,
+
+*/
+func maxProduct(nums []int) int {
+	return 0
+}
+
+/**
+https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/
+首先就是理清楚二叉搜索树的概念:二叉树中的每一个节点,大于其左子树中所有节点,小于其右子树所有节点.
+然后这个搜索树还必须是高度平衡的:每个节点的左右子树的高度差的绝对值不超过1.
+搞清楚概念之后,发现果然很适合使用分治法:数组最中间那个就是根节点,剩下左右两个子数组就是左右子树,
+分别在左右子树中寻找根节点,这样不断递归，将节点分成左右子树。
+这里需要对一些边界情况进行处理：
+
+1. 数组为空，返回 nil
+2. 数组元素只有一个，返回一个叶子节点
+3. 数组元素两个，返回一个只有左子树的节点
+4. 数组元素大于等于三个，返回一个拥有左右子树的节点
+*/
+func sortedArrayToBST(nums []int) *TreeNode {
+	return toBST(nums)
+}
+
+func toBST(nums []int) *TreeNode {
+	length := len(nums)
+	if length == 0 {
+		return nil
+	}
+	if length == 1 {
+		return &TreeNode{Val: nums[0]}
+	}
+	current := length / 2
+	left := toBST(nums[:current])
+	var right *TreeNode = nil
+	if current+1 < length {
+		right = toBST(nums[current+1:])
+	}
+	return &TreeNode{
+		Left:  left,
+		Right: right,
+		Val:   nums[current],
+	}
+}
+
+/**
+1014. 最佳观光组合
+https://leetcode-cn.com/problems/best-sightseeing-pair/
+先选最大的,然后在其附近找比较大的不是很合适,因为可能出现最大的周围都是小喽啰,
+第二和第三大在一起的情况.
+现在尝试使用动态规划:
+对于数组这样的动态规划,子问题一般都是数组子数组相关,现在考虑,假设我们已经知道
+数组 nums(n-1) 的最高分是多少了,现在如何求 nums(n) 的最高分?
+
+*/
+func maxScoreSightseeingPair(values []int) int {
+	return 0
+}
