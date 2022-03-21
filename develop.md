@@ -152,7 +152,7 @@ ffmpeg -y -i sintel_trailer-1080p.mp4 \
 
 - <https://hlsbook.net/creating-a-master-playlist-with-ffmpeg/>
 
-## JOSN
+## JSON
 
 - `json`对`struct`序列化和反序列化时，会忽略不可导出（首字母小写）的成员
 - `json`对`struct`进行反序列化的时候会尽量匹配大小写，但是如果大小写不匹配也能解析
