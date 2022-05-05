@@ -1,6 +1,9 @@
 package dance
 
-import "testing"
+import (
+	"github.com/go-playground/assert/v2"
+	"testing"
+)
 
 // 2021/8/25
 // 排序算法
@@ -53,7 +56,7 @@ func TestMergeSort(t *testing.T) {
 /**
 快速排序
 */
-func quickSort(nums []int) []int {
+func quickSort1(nums []int) []int {
 	helper(nums, 0, len(nums)-1)
 	return nums
 }
@@ -100,8 +103,68 @@ func partial(nums []int, begin, end int) int {
 	return i
 }
 
+func binarySearch(nums []int, target int) int {
+	len1 := len(nums)
+	low, high := 0, len1-1
+	for low <= high {
+		middle := (low + high) / 2
+		if nums[middle] < target {
+			low = middle + 1
+		} else if nums[middle] > target {
+			high = middle - 1
+		} else {
+			return middle
+		}
+	}
+	return -1
+}
+
+func TestBinarySearch(t *testing.T) {
+	nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	assert.Equal(t, binarySearch(nums, 0), -1)
+	assert.Equal(t, binarySearch(nums, 1), 0)
+	assert.Equal(t, binarySearch(nums, 5), 4)
+	assert.Equal(t, binarySearch(nums, 10), 9)
+	assert.Equal(t, binarySearch(nums, 11), -1)
+}
+
+// 分区函数
+func partition(src []int, lo, hi int) int {
+	i := lo + 1
+	j := hi
+	pivot := src[lo]
+	for {
+		for src[i] < pivot && i != hi {
+			i++
+		}
+		for src[j] > pivot && j != lo {
+			j--
+		}
+		if i >= j {
+			break
+		}
+		src[i], src[j] = src[j], src[i]
+	}
+	src[lo], src[j] = src[j], src[lo]
+	return j
+}
+
+func quickSortHelper(src []int, lo, hi int) {
+	if hi <= lo {
+		return
+	}
+	j := partition(src, lo, hi)
+	quickSortHelper(src, lo, j-1)
+	quickSortHelper(src, j+1, hi)
+}
+
+func quickSort(src []int) []int {
+	quickSortHelper(src, 0, len(src)-1)
+	return src
+}
+
 func TestQuickSort(t *testing.T) {
-	nums := []int{5, 2, 3, 1}
+	nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	result := quickSort(nums)
 	t.Log(result)
 }
